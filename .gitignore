@@ -1,0 +1,52 @@
+# 忽略所有的日志文件
+*.log
+
+# ADMIN里的.gitignore已处理Vue特定的忽略项
+# 忽略 Node.js 的依赖目录
+ADMIN/node_modules/
+
+# 运行时数据
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# IDE配置目录
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+
+# 操作系统生成的文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Flask特定的忽略项
+# 忽略 Python 编译生成的字节码
+NNModel/**/__pycache__/
+
+# # 虚拟环境目录
+# venv/
+# *.venv
+# env/
+# *.env
+# ENV/
+
+# Pytest缓存
+*.pytest_cache/
+
+# 依赖文件
+# 依赖管理文件（如果想在仓库中跟踪`package-lock.json`或`yarn.lock`，请移除下面的行）
+package-lock.json
+yarn.lock
+
+# 忽略其他可能的临时文件或目录
+*.tmp
+*.temp
+*.bak
