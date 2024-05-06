@@ -4,7 +4,7 @@
     <div class="row-btns">
       <a-space>
         <slot></slot>
-        <a-button type="primary" size="small" @click="()=>{emit('add')}" v-if="showAdd" v-permission="addAuth">
+        <!-- <a-button type="primary" size="small" @click="()=>{emit('add')}" v-if="showAdd" v-permission="addAuth">
           <template #icon>
             <IconFont type="icon-add"/>
           </template>
@@ -15,7 +15,7 @@
             <delete-outlined/>
           </template>
           {{ deleteText }}
-        </a-button>
+        </a-button> -->
       </a-space>
     </div>
   </div>

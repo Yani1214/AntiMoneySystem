@@ -8,10 +8,10 @@
       @remove="handleRemove"
       list-type="picture"
       :showUploadList="showUploadList?{showDownloadIcon: true, showRemoveIcon: true}:false"
-      action="/v1/common/files/upload">
-    <a-button size="small" type="primary">
+      action="/v1/process/upload">
+    <a-button size="middle" type="primary">
       <IconFont type="icon-upload"/>
-      上传
+      上传文件
     </a-button>
   </a-upload>
 </template>
@@ -40,7 +40,8 @@ const state = reactive({
 watch(() => props.url, (newValue) => {
   let obj = {
     uid: '1',
-    name: '图片.png',
+    // name: '图片.png',
+    name: decodeURIComponent(newValue.split('/').pop()), // 解码文件名
     status: 'done',
     response: {},
     url: newValue,
@@ -62,11 +63,15 @@ const handleChange = ({
   if (file.status === 'error') {
     ZyNotification.error(file.response.message || '上传失败')
   }
+  // if (file.status === 'done') {
+  //   emit('update:url', file.response.data.previewUrl)
+  //   emit('uploadChange', file)
+  // }
   if (file.status === 'done') {
-    emit('update:url', file.response.data.previewUrl)
-    emit('uploadChange', file)
+    ZyNotification.success(file.response.message || '上传成功')
   }
 };
+
 const handleRemove = (file) => {
   if (!file.response?.data?.filename) {
     return console.log('删除失败')

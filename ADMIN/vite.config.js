@@ -17,8 +17,9 @@ export default defineConfig({
         open: true,
         proxy: {
             '/v1': {
-                target: ' http://localhost:3000',
+                target: ' http://127.0.0.1:3091',
                 changeOrigin: true,
+                rewrite: path => path.replace(/^\/v1/, ''), // 设置重写路径, 去掉path
             }
         }
     },
