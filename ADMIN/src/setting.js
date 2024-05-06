@@ -1,9 +1,9 @@
 export default {
     // 网站信息
     websiteInfo: {
-        name: 'ZY·Admin',
+        name: 'NoEscape',
         version: '1.0.0',
-        desc: '开箱即用的中后台管理系统',
+        desc: '一个反洗钱系统',
         // logo仅支持在线地址
         // logo: 'http://zhouyi.run:5222/api/public/admin/getFiles?id=5d38c26acf509bdcab4f8c677ce90088.png&&mimetype=image/png',
     },
@@ -17,6 +17,7 @@ export default {
             close: 'esc'
         }
     },
+    // Chuifengdinglv: 页脚备案信息记得修改
     // 页脚备案信息
     reference: {
         show: true, //是否展示页脚

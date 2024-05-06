@@ -7,14 +7,8 @@
       <a-row align="middle" justify="center" class="login-content-main">
         <a-col class="login-content-bgc" :pull="1">
           <img :src="loginBg" width="480">
-          <h2>{{setting.websiteInfo.desc || '开箱即用的中后台管理系统'}}</h2>
-          <p style="margin-top: 15px">✨✨✨ 欢迎使用 {{setting.websiteInfo.name || 'ZY·Admin'}}@{{ setting.websiteInfo.version || '1.0.0' }}！</p>
-          <p style="margin-top: 15px">
-            <a href='https://gitee.com/Z568_568/vue3-antd-plus/stargazers'><img
-                src='https://gitee.com/Z568_568/vue3-antd-plus/badge/star.svg?theme=dark' alt='star'/></a>
-            <a href='https://gitee.com/Z568_568/vue3-antd-plus/members'><img
-                src='https://gitee.com/Z568_568/vue3-antd-plus/badge/fork.svg?theme=dark' alt='fork'/></a>
-          </p>
+          <h2>{{setting.websiteInfo.desc || '一个反洗钱系统'}}</h2>
+          <p style="margin-top: 15px">✨✨✨ 欢迎使用 {{setting.websiteInfo.name || 'NoEscape'}}@{{ setting.websiteInfo.version || '1.0.0' }}！</p>
         </a-col>
 
         <a-col class="login-content-form">
@@ -23,7 +17,8 @@
         </a-col>
       </a-row>
     </a-layout-content>
-    <a-layout-footer class="login-footer">
+    <!-- Chuifengdinglv: 页脚部分版权信息删除 -->
+    <!-- <a-layout-footer class="login-footer">
       <div v-if="setting.reference.show" class="copyright">{{ ` Copyright ©${new Date().getFullYear()} by` }}<a target="_blank" class="out-link"
                                                                                   :href="setting.reference.authorizationUrl">@{{
           setting.reference.authorization
@@ -33,6 +28,8 @@
             setting.reference.number
           }}</a>
       </div>
+    </a-layout-footer> -->
+    <a-layout-footer class="login-footer">
     </a-layout-footer>
   </a-layout>
 </template>
