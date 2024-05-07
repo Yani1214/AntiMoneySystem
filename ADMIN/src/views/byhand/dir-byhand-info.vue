@@ -1,6 +1,6 @@
 <template>
     <section>
-      <ZySearchForm
+      <!-- <ZySearchForm
           :formValue="state.query.params"
           @submit="goPage"
           @reset="handleReset"
@@ -21,7 +21,7 @@
                    placeholder="请输入交易表所属银行" @pressEnter="goPage"
                    autocomplete="off"/>
         </a-form-item>
-      </ZySearchForm>
+      </ZySearchForm> -->
       
       <ZyFittleRow @add="goEdit"
                    @delete="goDeleteAll"
@@ -30,18 +30,17 @@
                    deleteAuth="sys:users_opt_logs:deleteAll"
       >
       
-        <a-button type="primary" size="small"  v-permission="'sys:users_opt_logs:export'" @click="goExport">
+        <a-button type="primary" size="small" @click="goExport">
           <template #icon>
             <IconFont type="icon-daochu1"/>
           </template>
           导出
         </a-button>
         <a-upload
-                v-permission="'sys:users_opt_logs:import'"
                 :headers="headers"
                 @change="handleImportChange"
                 :showUploadList="false"
-                action="/v1/sys/users_opt_logs/import">
+                action="/v1/process/byhand/import">
           <a-button type="primary" size="small">
             <template #icon>
               <IconFont type="icon-daoru1"/>
@@ -54,11 +53,10 @@
           <template #icon>
             <IconFont type="icon-down-arrow"/>
           </template>
-          继续检测
+          继续上传至数据库
         </a-button>
       </ZyFittleRow>
       <a-table
-          :row-selection="{ selectedRowKeys: state.selectedRowKeys, onChange: onSelectChange }"
           bordered
           :resizable="true"
           :loading="state.loading"
@@ -89,14 +87,14 @@
         </template>
   
       </a-table>
-      <ZyModal :minWidth="650" :show="state.show.edit" :title="state.editTitle" key="GetUsers_opt_logsInfo"
+      <!-- <ZyModal :minWidth="650" :show="state.show.edit" :title="state.editTitle" key="GetUsers_opt_logsInfo"
                @close="close">
         <GetUsers_opt_logsInfo :updateData="state.updateData" @close="close"/>
       </ZyModal>
       <ZyModal :minWidth="650" :show="state.show.view" title="查看操作日志" key="ViewUsers_opt_logsInfo"
                @close="close">
         <ViewUsers_opt_logsInfo :viewData="state.viewData" @close="close"/>
-      </ZyModal>
+      </ZyModal> -->
     </section>
   
   </template>
@@ -126,13 +124,20 @@
   import {TimeUtils} from "libs/util.time";
   import {hasPerms} from 'libs/util.common';
   
+  // import {
+  //   users_opt_logsDelete,
+  //   users_opt_logsExport,
+  //   users_opt_logsList,
+  //   users_opt_logsDeleteAll,
+  //   users_opt_logsDownloadTemplate
+  // } from "api/modules/api.users_opt_logs";
+
   import {
-    users_opt_logsDelete,
-    users_opt_logsExport,
-    users_opt_logsList,
-    users_opt_logsDeleteAll,
-    users_opt_logsDownloadTemplate
-  } from "api/modules/api.users_opt_logs";
+    processByhand,
+    processExport,
+    processDetect
+  }from "api/modules/api.process";
+  
   import dbUtils from "libs/util.strotage";
   const columns = [
     {title: "任务流水号", dataIndex: "missonNumber", key: "missonNumber", align: 'center'},
@@ -212,9 +217,9 @@
     state.loading.spinning = true
     // 将响应式query返回起原始对象
     let p = toRaw(state.query)
-    users_opt_logsList(p).then(res => {
+    processByhand(p).then(res => {
       state.loading.spinning = false
-      let datas = res.data.result
+      let datas = res.data
       for (const data of datas) {
         data.createdAt = TimeUtils.formatTime(data.createdAt)
         data.updatedAt = TimeUtils.formatTime(data.updatedAt)
@@ -229,7 +234,9 @@
     })
   
   }
+
   const onSelectChange = selectedRowKeys => {
+    console.log(selectedRowKeys)
     state.selectedRowKeys = selectedRowKeys;
   };
   // 处理表格变化事件
@@ -254,18 +261,58 @@
     row && row._id ? state.editTitle = '修改操作日志' : state.editTitle = '添加操作日志'
     state.updateData = row
   }
-  // 导出EXCEL
+  // // 导出EXCEL
+  // const goExport = () => {
+  //   state.loading.spinning = true
+  //   // 将响应式query返回起原始对象
+  //   let p = toRaw(state.query)
+  //   users_opt_logsExport(p).then(res => {
+  //     state.loading.spinning = false
+  //   }).catch(err => {
+  //     state.loading.spinning = false
+  //     console.log(err)
+  //   })
+  // }
+
   const goExport = () => {
-    state.loading.spinning = true
-    // 将响应式query返回起原始对象
-    let p = toRaw(state.query)
-    users_opt_logsExport(p).then(res => {
-      state.loading.spinning = false
-    }).catch(err => {
-      state.loading.spinning = false
-      console.log(err)
+  state.loading.spinning = true;
+  // 将响应式 query 返回原始对象
+  let p = toRaw(state.query);
+  
+  // 处理导出逻辑
+  processExport(p)
+    .then(res => {
+      // 处理成功响应
+      state.loading.spinning = false;
+
+      // 获取后端返回的 blob 数据
+      let blobData = res;
+      console.log(res)
+
+      // 创建 blob 对象
+      let blob = new Blob([blobData], { type: 'application/zip' });
+
+      // 创建 blob URL
+      const blobUrl = URL.createObjectURL(blob);
+
+      // 创建 <a> 元素，用于下载
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = 'manual.zip'; // 下载文件的名称
+      document.body.appendChild(a);
+      a.click();
+
+      // 下载完成后释放 blob URL 和移除 <a> 元素
+      URL.revokeObjectURL(blobUrl);
+      document.body.removeChild(a);
     })
-  }
+    .catch(err => {
+      // 处理错误响应
+      state.loading.spinning = false;
+      console.error('Error while exporting data:', err);
+    });
+}
+
   // 导入数据
   const handleImportChange = ({
                           file,
@@ -288,23 +335,23 @@
   //   })
   // }
   
-  // 批量删除
-  const goDeleteAll = () => {
-    ZyConfirm('确认删除数据?').then(ok => {
-      ok && users_opt_logsDeleteAll({ids: state.selectedRowKeys || []}).then(res => {
-        ZyNotification.success('删除成功')
-        goPage()
-      })
-    })
-  }
-  const goDelete = (row) => {
-    ZyConfirm('确认删除该条数据?').then(ok => {
-      ok && users_opt_logsDelete(row).then(res => {
-        ZyNotification.success('删除成功')
-        goPage()
-      })
-    })
-  }
+  // // 批量删除
+  // const goDeleteAll = () => {
+  //   ZyConfirm('确认删除数据?').then(ok => {
+  //     ok && users_opt_logsDeleteAll({ids: state.selectedRowKeys || []}).then(res => {
+  //       ZyNotification.success('删除成功')
+  //       goPage()
+  //     })
+  //   })
+  // }
+  // const goDelete = (row) => {
+  //   ZyConfirm('确认删除该条数据?').then(ok => {
+  //     ok && users_opt_logsDelete(row).then(res => {
+  //       ZyNotification.success('删除成功')
+  //       goPage()
+  //     })
+  //   })
+  // }
   // // 重置密码
   // const resetPassword = (data) => {
   //   state.resetData = data || {}
