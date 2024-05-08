@@ -68,7 +68,7 @@ const handleChange = ({
   //   emit('uploadChange', file)
   // }
   if (file.status === 'done') {
-    ZyNotification.success(file.response.message || '上传成功')
+    ZyNotification.success(file.response.message || '上传成功，请到人工数据处理界面进行处理')
   }
 };
 

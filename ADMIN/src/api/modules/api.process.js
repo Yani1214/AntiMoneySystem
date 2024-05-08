@@ -10,7 +10,7 @@ export const processImport = (data) => {
     return service.post('/v1/process/byhand/import', data)
 }
 export const processExport = (data) => {
-    return service.post('/v1/process/byhand/export', data)
+    return service.post('/v1/process/byhand/export', data, null,'blob')
 }
 export const processDetect = (data) => {
     return service.post('/v1/process/byhand/detect', data)

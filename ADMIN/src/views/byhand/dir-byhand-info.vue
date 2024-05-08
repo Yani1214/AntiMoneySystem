@@ -49,11 +49,11 @@
           </a-button>
         </a-upload>
   
-        <a-button type="primary" size="small" @click="getTemplate">
+        <a-button type="primary" size="small" @click="getToDatabase">
           <template #icon>
             <IconFont type="icon-down-arrow"/>
           </template>
-          继续上传至数据库
+          核验完成，上传数据库
         </a-button>
       </ZyFittleRow>
       <a-table
@@ -143,7 +143,7 @@
     {title: "任务流水号", dataIndex: "missonNumber", key: "missonNumber", align: 'center'},
     {title: "交易表所属银行", dataIndex: "bank", key: "bank", align: 'center'},
     {title: "修改时间", dataIndex: "createdAt", key: "createdAt", align: 'center'},
-    {title: "操作人", dataIndex: "operator", key: "operator", align: 'center'},
+    // {title: "操作人", dataIndex: "operator", key: "operator", align: 'center'},
   ];
   const headers = {
     authorization: dbUtils.get('token')
@@ -261,57 +261,32 @@
     row && row._id ? state.editTitle = '修改操作日志' : state.editTitle = '添加操作日志'
     state.updateData = row
   }
-  // // 导出EXCEL
-  // const goExport = () => {
-  //   state.loading.spinning = true
-  //   // 将响应式query返回起原始对象
-  //   let p = toRaw(state.query)
-  //   users_opt_logsExport(p).then(res => {
-  //     state.loading.spinning = false
-  //   }).catch(err => {
-  //     state.loading.spinning = false
-  //     console.log(err)
-  //   })
-  // }
 
-  const goExport = () => {
-  state.loading.spinning = true;
-  // 将响应式 query 返回原始对象
-  let p = toRaw(state.query);
-  
-  // 处理导出逻辑
-  processExport(p)
-    .then(res => {
-      // 处理成功响应
-      state.loading.spinning = false;
-
-      // 获取后端返回的 blob 数据
-      let blobData = res;
-      console.log(res)
-
-      // 创建 blob 对象
-      let blob = new Blob([blobData], { type: 'application/zip' });
-
-      // 创建 blob URL
-      const blobUrl = URL.createObjectURL(blob);
-
-      // 创建 <a> 元素，用于下载
-      const a = document.createElement('a');
-      a.href = blobUrl;
-      a.download = 'manual.zip'; // 下载文件的名称
-      document.body.appendChild(a);
-      a.click();
-
-      // 下载完成后释放 blob URL 和移除 <a> 元素
-      URL.revokeObjectURL(blobUrl);
-      document.body.removeChild(a);
-    })
-    .catch(err => {
-      // 处理错误响应
-      state.loading.spinning = false;
-      console.error('Error while exporting data:', err);
+// 导出 ZIP 文件
+const goExport = () => {
+    state.loading.spinning = true;
+    let p = toRaw(state.query)
+    // 发送 POST 请求到后端的导出路由
+    processExport(p).then(response => {
+        state.loading.spinning = false;
+        // console.log(response)
+        // 创建一个 Blob 对象并保存 ZIP 文件数据
+        const blob = new Blob([response], { type: 'application/zip',responseType: 'blob' });
+        // 创建一个链接并设置下载属性，将 ZIP 文件链接到该链接上
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'manual.zip'; // 设置下载的文件名
+        // 模拟点击链接以触发下载
+        link.click();
+        // 释放 URL 对象
+        window.URL.revokeObjectURL(link.href);
+    }).catch(error => {
+        state.loading.spinning = false;
+        console.error('导出失败:', error);
+        // 处理导出失败的情况
     });
 }
+
 
   // 导入数据
   const handleImportChange = ({
@@ -325,6 +300,28 @@
       goPage()
     }
   };
+
+  // 导入到数据库
+  const getToDatabase = () => {
+    state.loading.spinning = true
+    // 将响应式query返回起原始对象
+    let p = toRaw(state.query)
+    processDetect(p).then(res => {
+      state.loading.spinning = false
+      console.log(res)
+      if(res.result == 'ok'){
+        ZyNotification.success(res.message ||'已成功导入数据库')
+      }
+      if(res.result == 'no'){
+        ZyNotification.error(res.message || '导入失败')
+      }
+    }).catch(err => {
+      state.loading.spinning = false
+      console.log(err)
+    })
+  };
+
+
   // // 下载模板
   // const getTemplate =()=>{
   //   users_opt_logsDownloadTemplate().then(res => {
@@ -352,11 +349,7 @@
   //     })
   //   })
   // }
-  // // 重置密码
-  // const resetPassword = (data) => {
-  //   state.resetData = data || {}
-  //   state.show.reset = true
-  // }
+
   const close = (isSave) => {
     state.show.reset = false
     state.show.view = false
