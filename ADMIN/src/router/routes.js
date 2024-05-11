@@ -45,8 +45,8 @@ const frameIn = [
             },
 
             {
-                path: '/dir-byhand-info.vue',
-                name: 'dir-byhand-info.vue',
+                path: '/dir-byhand-info',
+                name: 'dir-byhand-info',
                 meta: {
                     cache: true,
                     title: '人工数据处理',
@@ -56,26 +56,26 @@ const frameIn = [
                 component: () => import('@/views/byhand/dir-byhand-info.vue'),
             },
             {
-                path: '/dataCenter',
-                name: 'dataCenter',
+                path: '/dir-person-info',
+                name: 'dir-person-info',
                 meta: {
                     cache: true,
                     title: '用户案例分析',
                     requiresAuth: true,
                     icon: 'yonghuming'
                 },
-                component: () => import('@/views/demo/dataCenter/index.vue'),
+                component: () => import('@/views/caseAnalysis/dir-person-info.vue'),
             },
             {
-                path: '/dataCenter',
-                name: 'dataCenter',
+                path: '/dir-group-info',
+                name: 'dir-group-info',
                 meta: {
                     cache: true,
                     title: '洗钱团伙分析',
                     requiresAuth: true,
                     icon: 'zuzhi'
                 },
-                component: () => import('@/views/demo/dataCenter/index.vue'),
+                component: () => import('@/views/caseAnalysis/dir-group-info.vue'),
             },
 
             {
