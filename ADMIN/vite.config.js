@@ -17,7 +17,7 @@ export default defineConfig({
         open: true,
         proxy: {
             '/v1': {
-                target: ' http://127.0.0.1:3091',
+                target: " http://localhost:5000",
                 changeOrigin: true,
                 rewrite: path => path.replace(/^\/v1/, ''), // 设置重写路径, 去掉path
             }
@@ -26,16 +26,16 @@ export default defineConfig({
     resolve: {
         // 别名
         alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url)),
-            "comps": fileURLToPath(new URL('src/components', import.meta.url)),
-            "views": fileURLToPath(new URL('src/views', import.meta.url)),
-            "store": fileURLToPath(new URL('src/store', import.meta.url)),
-            "utils": fileURLToPath(new URL('src/utils', import.meta.url)),
-            "libs": fileURLToPath(new URL('src/libs', import.meta.url)),
-            "api": fileURLToPath(new URL('src/api', import.meta.url)),
-            "styles": fileURLToPath(new URL('src/styles', import.meta.url)),
+          "@": fileURLToPath(new URL("./src", import.meta.url)),
+          comps: fileURLToPath(new URL("src/components", import.meta.url)),
+          views: fileURLToPath(new URL("src/views", import.meta.url)),
+          store: fileURLToPath(new URL("src/store", import.meta.url)),
+          utils: fileURLToPath(new URL("src/utils", import.meta.url)),
+          libs: fileURLToPath(new URL("src/libs", import.meta.url)),
+          api: fileURLToPath(new URL("src/api", import.meta.url)),
+          styles: fileURLToPath(new URL("src/styles", import.meta.url))
         }
-    },
+      },
     css: {
         preprocessorOptions: {
             scss: {
