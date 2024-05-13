@@ -3,7 +3,7 @@
 <div style="display: flex; align-items: center;">
   <a-row type="flex" justify="start" align="middle">
     <a-col span="18">
-      <a-input v-model="searchValue" placeholder="请输入需要查询的用户名称" @pressEnter="search"></a-input>
+      <a-input v-model:value="searchValue" placeholder="请输入需要查询的用户名称" @pressEnter="search"></a-input>
     </a-col>
     <a-col span="2">
       <a-button type="primary" size="middle" @click="search">查询</a-button>
@@ -19,6 +19,7 @@
   </div>
 </section>
 </template>
+
 <script>
 import echarts from 'echarts';
 
@@ -32,7 +33,7 @@ export default {
       // 防止出现多个echarts初始化的情况
       myChart: '',
       options: {},
-      searchValue: '', // 输入框的值
+      searchValue: '杨小琴', // 输入框的值
     }
   },
   mounted () {
@@ -54,7 +55,7 @@ export default {
         // const readQuery2 = `MATCH p=()-->() RETURN p LIMIT 20`
         // const readQuery2 = 'MATCH p=()-[r:TRANSACTS_TO]->() RETURN p LIMIT 30'
         const readQuery2 = `MATCH (n1:Node1)-[r:TRANSACTS_TO]->(n2:Node2) 
-                            WHERE n1.trans_name = '杨小琴' OR n2.cp_name = '杨小琴' 
+                            WHERE n1.trans_name = $searchValue OR n2.cp_name = $searchValue 
                             RETURN n1, r, n2
                             LIMIT 20`
         // const readQuery2 = `MATCH (p:Node1)
@@ -62,8 +63,9 @@ export default {
         //               RETURN p.trans_name AS trans_name LIMIT 20` 
         
         var me = { records: [] }
-        const result = await session.run(readQuery2, {})
-        // const result = await session.run(readQuery2, { searchValue: this.searchValue })
+        // const result = await session.run(readQuery2, {})
+        const result = await session.run(readQuery2, { searchValue: this.searchValue })
+        console.log(this.searchValue)
         
         // console.log(result)
         me.records = result.records;
@@ -263,10 +265,10 @@ export default {
           ]
  
         }
-        // console.log(this.echartsData)
-        // console.log(this.echartsNode)
-        // console.log(this.nodesRelation)
-        // console.log(this.category)
+        console.log(this.echartsData)
+        console.log(this.echartsNode)
+        console.log(this.nodesRelation)
+        console.log(this.category)
         // console.log(options.series)
         console.log(this, 66633);
  
@@ -299,10 +301,22 @@ export default {
         // await session.close()
       }
     },
-    // search() {
-    //   // 点击查询按钮时触发的方法
-    //   this.searchGraph(); // 调用搜索方法
-    // },
+    search() {
+      // 点击查询按钮时触发的方法
+      console.log("searchValue:", this.searchValue);
+      this.resetState();
+      this.searchGraph();
+    },
+    resetState() {
+      // 将数据属性重置为其初始值
+      // Object.assign(this.$data, this.$options.data.call(this));
+        // 获取初始数据对象
+        const initialData = this.$options.data.call(this);
+        // 排除 searchValue 属性
+        const { searchValue, ...restData } = initialData;
+        // 仅复制除了 searchValue 之外的属性到 $data 中
+        Object.assign(this.$data, restData);
+    },
   }
 }
  

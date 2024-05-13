@@ -2,12 +2,18 @@
 import datetime
 import bcrypt
 
+from flask_cors import CORS
+from flask_restful import Api
+
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
 from uuid import uuid4
 
 app = Flask(__name__)
+CORS(app)
+api = Api(app)
+
 
 # 设置数据库连接地址
 DB_URI = 'mysql+pymysql://root:12345678@localhost:3306/mealpass?charset=utf8mb4'
@@ -112,5 +118,14 @@ def user_login():
         })
 
 
+#######################################注册蓝图#################################
+from process import upload_blueprint,byhand_blueprint
+
+
+app.register_blueprint(upload_blueprint)
+app.register_blueprint(byhand_blueprint)
+
+################################################################################
+
 if __name__ == '__main__':
-    app.run()
+    app.run(host='127.0.0.1', port=3091)

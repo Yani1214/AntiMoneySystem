@@ -17,7 +17,7 @@ export default defineConfig({
         open: true,
         proxy: {
             '/v1': {
-                target: " http://localhost:5000",
+                target: " http://localhost:3091",
                 changeOrigin: true,
                 rewrite: path => path.replace(/^\/v1/, ''), // 设置重写路径, 去掉path
             }

@@ -1,6 +1,6 @@
 <template>
   <section>
-<div style="display: flex; align-items: center;">
+<!-- <div style="display: flex; align-items: center;">
   <a-row type="flex" justify="start" align="middle">
     <a-col span="18">
       <a-input v-model:value="searchValue" placeholder="请输入需要查询的用户名称" @pressEnter="search"></a-input>
@@ -9,7 +9,7 @@
       <a-button type="primary" size="middle" @click="search">查询</a-button>
     </a-col>
   </a-row>
-</div>
+</div> -->
   <div style="width:100%;height:600px">
     <div
       ref="graph"
@@ -33,7 +33,7 @@ export default {
       // 防止出现多个echarts初始化的情况
       myChart: '',
       options: {},
-      searchValue: '杨小琴', // 输入框的值
+      // searchValue: '杨小琴', // 输入框的值
     }
   },
   mounted () {
@@ -42,6 +42,7 @@ export default {
   },
   methods: {
     async searchGraph () {
+      const array = ['杨小琴', '苟兴兵', '何年碧', '何顺京', '胡秋艳', '李春荣', '李菊英', '孙翊章', '王庆凤', '颜爱中', '余英', '张柱碧']
       // 在Vue组件中
       const neo4j = await import('neo4j-driver');
       const uri = 'bolt://localhost:7687/anti-money'; //ip地址
@@ -55,16 +56,16 @@ export default {
         // const readQuery2 = `MATCH p=()-->() RETURN p LIMIT 20`
         // const readQuery2 = 'MATCH p=()-[r:TRANSACTS_TO]->() RETURN p LIMIT 30'
         const readQuery2 = `MATCH (n1:Node1)-[r:TRANSACTS_TO]->(n2:Node2) 
-                            WHERE n1.trans_name = $searchValue OR n2.cp_name = $searchValue 
+                            WHERE n1.trans_name IN $searchValues AND n2.cp_name IN $searchValues 
                             RETURN n1, r, n2
-                            LIMIT 20`
+                            LIMIT 150`;
         // const readQuery2 = `MATCH (p:Node1)
         //               WHERE p.trans_name = "杨小琴"
         //               RETURN p.trans_name AS trans_name LIMIT 20` 
         
         var me = { records: [] }
         // const result = await session.run(readQuery2, {})
-        const result = await session.run(readQuery2, { searchValue: this.searchValue })
+        const result = await session.run(readQuery2, { searchValues: array })
         console.log(this.searchValue)
         
         // console.log(result)
@@ -301,22 +302,22 @@ export default {
         // await session.close()
       }
     },
-    search() {
-      // 点击查询按钮时触发的方法
-      console.log("searchValue:", this.searchValue);
-      this.resetState();
-      this.searchGraph();
-    },
-    resetState() {
-      // 将数据属性重置为其初始值
-      // Object.assign(this.$data, this.$options.data.call(this));
-        // 获取初始数据对象
-        const initialData = this.$options.data.call(this);
-        // 排除 searchValue 属性
-        const { searchValue, ...restData } = initialData;
-        // 仅复制除了 searchValue 之外的属性到 $data 中
-        Object.assign(this.$data, restData);
-    },
+    // search() {
+    //   // 点击查询按钮时触发的方法
+    //   console.log("searchValue:", this.searchValue);
+    //   this.resetState();
+    //   this.searchGraph();
+    // },
+    // resetState() {
+    //   // 将数据属性重置为其初始值
+    //   // Object.assign(this.$data, this.$options.data.call(this));
+    //     // 获取初始数据对象
+    //     const initialData = this.$options.data.call(this);
+    //     // 排除 searchValue 属性
+    //     const { searchValue, ...restData } = initialData;
+    //     // 仅复制除了 searchValue 之外的属性到 $data 中
+    //     Object.assign(this.$data, restData);
+    // },
   }
 }
  
