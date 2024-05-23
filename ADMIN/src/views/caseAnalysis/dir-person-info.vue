@@ -33,10 +33,10 @@
   import UserList from "./UserList.vue";
 
 export default {
+  components: {
+    UserList
+  },
   data () {
-    components: {
-      UserList
-    },
     return {
       // 绘制知识图谱的节点数据
       echartsData: [],
