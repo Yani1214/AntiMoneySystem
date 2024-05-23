@@ -37,6 +37,9 @@ export const useAuthStore = defineStore("auth", () => {
             ZyNotification.success("登录成功");
             dbUtils.clear();
             dbUtils.set("token", "token"); // 测试token
+            dbUtils.set("userInfo", {
+              ...res.userInfo
+            });
             router.replace("/index");
           } else {
             ZyNotification.error(res.msg);
