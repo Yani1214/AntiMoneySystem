@@ -4,7 +4,7 @@
     <div class="search-bar">
       <a-row type="flex" justify="start" align="middle" :gutter="10">
         <a-col :span="18">
-          <a-input v-model="searchValue" placeholder="请输入需要查询的用户名称" @pressEnter="search"></a-input>
+          <a-input v-model:value="searchValue" placeholder="请输入需要查询的用户名称" @pressEnter="search"></a-input>
         </a-col>
         <a-col :span="6">
           <a-button type="primary" size="middle" @click="search">查询</a-button>
@@ -45,8 +45,8 @@ export default {
       // 防止出现多个echarts初始化的情况
       myChart: '',
       options: {},
-      searchValue: '杨小琴', // 输入框的值
-      currentPage: 1, // 当前页码
+      searchValue: '', // 输入框的值
+      currentPage: 0, // 当前页码
       totalItems: 0, // 总记录数
       pageSize: 10 // 每页记录数
     }
@@ -59,7 +59,7 @@ export default {
     if (this.$refs.userList) {
       this.$refs.userList.fetchUserData("", this.currentPage, this.pageSize);
     }
-    this.searchGraph()
+    // this.searchGraph()
   },
   methods: {
     search() {
