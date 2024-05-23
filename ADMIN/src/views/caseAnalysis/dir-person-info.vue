@@ -44,11 +44,11 @@ export default {
     async searchGraph () {
       // 在Vue组件中
       const neo4j = await import('neo4j-driver');
-      const uri = 'bolt://localhost:7687/anti-money'; //ip地址
+      const uri = 'bolt://localhost:7687/test'; //ip地址
       const user = 'neo4j'; //账号
       const password = 'XYZ67520x';//密码
       const driver = neo4j.driver(uri, neo4j.auth.basic(user, password))
-      const session = driver.session({ database: 'anti-money' })
+      const session = driver.session({ database: 'test' })
       
       try {
         // const readQuery1 = `MATCH (n:Person)  RETURN n.name AS name `
@@ -175,7 +175,7 @@ export default {
               // edgeSymbolSize: [80, 10],
               edgeLabel: {
                 normal: {
-                  show: true,
+                  show: false,
                   textStyle: {
                     fontSize: 12,
                   },

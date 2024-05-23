@@ -2,7 +2,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
-from NN.GAT import GATLayer
+from caseAnalysis.NN.GAT import GATLayer
 
 
 class GAT_LSTM_Net(nn.Module):

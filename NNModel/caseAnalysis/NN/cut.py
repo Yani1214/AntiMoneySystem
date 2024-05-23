@@ -158,7 +158,7 @@ def get_subgraph(card_trans):
         py = i['py_indicator']
         # 判断是否合并交易
         if last_trans and key == last_trans['cp_card'] and py == last_trans['py_indicator']:
-            print("have a merge")
+            # print("have a merge")
             last_trans['trans_balance'] = i['trans_balance']
             last_trans['trans_amount'] = last_trans['trans_amount'] + i['trans_amount']
             last_trans['summary'] = last_trans['summary'] + i['summary']

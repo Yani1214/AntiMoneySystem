@@ -120,10 +120,11 @@ def user_login():
 
 #######################################注册蓝图#################################
 from process import upload_blueprint,byhand_blueprint
-
+from caseAnalysis import analysis_blueprint
 
 app.register_blueprint(upload_blueprint)
 app.register_blueprint(byhand_blueprint)
+app.register_blueprint(analysis_blueprint)
 
 ################################################################################
 

@@ -14,8 +14,9 @@
           <a-button type="primary" id="upload" @click="readyToUpdate">上传文件</a-button>
         </a> -->
         <ZyUpload @uploadChange="goPage(1)" />
+
         <a target="_blank">
-          <a-button type="dashed" id="analysis">开始检测</a-button>
+          <a-button type="dashed" id="analysis" @click="goDetection">开始检测</a-button>
         </a>
 
       </header>
@@ -73,13 +74,71 @@
 </template>
 
 <script setup>
-import {watchEffect, reactive, ref} from 'vue'
-import {processUpload} from "../../api/modules/api.process.js";
+import {watchEffect, reactive, ref, toRaw} from 'vue'
 import ZyLogo from "../../components/common/ZyLogo.vue";
 import ZySectionHeader from "../../components/common/ZySectionHeader.vue";
 import ZyUpload from "../../components/common/ZyUpload.vue";
 
+import {
+    analysisDetection,
+  }from "api/modules/api.analysis";
 
+import {ZyConfirm, ZyNotification} from "libs/util.toast";
+
+const state = reactive({
+  show: {
+    add: false,
+    edit: false,
+    view: false
+  },
+  editTitle: '编辑',
+  activeComponent: null,
+  // 暂存更新数据
+  updateData: {},
+  resetData: {},
+  // 暂存查看数据
+  viewData: {},
+  selectedRowKeys: [],
+  // 请求参数
+  query: {
+    params: {},
+    pagination: {
+      current: 1,
+      pageSize: 11,
+      total: 0,
+      hideOnSinglePage: true,
+    },
+    sort: {
+      columnKey: "createdAt",
+      order: "descend" //降序（新的在前面）
+    }
+  },
+  dataList: [],
+  // loading
+  loading: {
+    spinning: false,
+    tip: '加载中'
+  }
+})
+
+const goDetection = () => {
+  state.loading.spinning = true
+  // 将响应式query返回起原始对象
+  let p = toRaw(state.query)
+  analysisDetection(p).then(res => {
+    state.loading.spinning = false
+    console.log(res)
+    if(res.result == 'ok'){
+      ZyNotification.success(res.message ||'请耐心等待')
+    }
+    if(res.result == 'no'){
+      ZyNotification.error(res.message || '请重新进行检测')
+    }
+  }).catch(err => {
+    state.loading.spinning = false
+    console.log(err)
+  })
+};
 
 </script>
 

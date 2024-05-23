@@ -40,12 +40,14 @@ def fill_name_munber(name_to_number):
     # 删除不要的“账号2”列
     df.drop(columns=['账号2'], inplace=True)
     # 修改列名和增加列名
-    new_columns = ['person_name', 'person_id','person_card','person_account', 'bank_name', 'task_id','summary', 'label']  # 在里添加你想要的新列名
+    new_columns = ['person_name', 'person_id','person_card','person_account', 'bank_name', 'task_id','summary', 'label','manual_review','id']  # 添加新列名
     df.columns = new_columns
     # 去除person_name为空的行
     df = df.dropna(subset=['person_name'])
     # 添加id列,填充person_number列
     df["person_number"] = df["person_name"].map(name_to_number)
+    df['manual_review'] = ''
+    df['id'] = ''
     # 将df文件存储到新路径
     df.to_csv('NNModel/process/database/identity/people.csv', index=False, encoding='utf-8')
         
