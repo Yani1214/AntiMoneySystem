@@ -63,6 +63,7 @@ export default {
   },
   methods: {
     search() {
+      this.currentPage = 1; // 每次新搜索时重置当前页码为 1
       // 点击查询按钮时触发的方法
       if (this.$refs.userList) {
         this.$refs.userList.fetchUserData(this.searchValue, this.currentPage, this.pageSize);
