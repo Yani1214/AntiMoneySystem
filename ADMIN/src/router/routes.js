@@ -90,18 +90,6 @@ const frameIn = [
         component: () => import("@/views/demo/dataCenter/index.vue")
       },
 
-      {
-        path: "/dataCenter",
-        name: "dataCenter",
-        meta: {
-          cache: true,
-          icon: "shujuzhongxin",
-          title: "数据大屏",
-          requiresAuth: false
-        },
-        component: () => import("@/views/demo/dataCenter/index.vue")
-      },
-
       // 重定向页面 必须保留
       {
         path: "/redirect/:path(.*)/:_origin_params(.*)?",

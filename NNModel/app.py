@@ -19,10 +19,10 @@ api = Api(app)
 
 # 设置数据库连接地址
 # 设置第一个数据库连接地址
-DB_URI_1 = 'mysql+pymysql://root:12345678@localhost:3306/mealpass?charset=utf8mb4'
+DB_URI_1 = 'mysql+pymysql://root:XYZ67520x@localhost:3306/mealpass?charset=utf8mb4'
 app.config['SQLALCHEMY_BINDS'] = {
     'db1': DB_URI_1,
-    'db2': 'mysql+pymysql://root:12345678@localhost:3306/anti-money?charset=utf8mb4'
+    'db2': 'mysql+pymysql://root:XYZ67520x@localhost:3306/test?charset=utf8mb4'
 }
 # 是否追踪数据库修改，一般不开启, 会影响性能
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
