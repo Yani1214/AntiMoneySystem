@@ -6,27 +6,31 @@
         <a-icon :type="item.expanded ? 'up' : 'down'" />
       </h3>
       <div v-if="item.expanded">
-        <p><strong>ID:</strong> {{ item.person_number }}</p>
-        <p><strong>身份证号:</strong> {{ item.person_id }}</p>
-        <p><strong>卡号:</strong>
-        <ul>
-          <li v-for="card in item.person_card" :key="card">{{ card }}</li>
-        </ul>
+        <p><span class="info-title">ID:</span> <span class="info-detail">{{ item.person_number }}</span></p>
+        <p><span class="info-title">身份证号:</span> <span class="info-detail">{{ item.person_id }}</span></p>
+        <p><span class="info-title">卡号:</span>
+          <a @click="toggleShowCards(item)">显示卡号 ({{ item.person_card.length }})</a>
+          <ul v-if="item.showCards">
+            <li v-for="card in item.person_card" :key="card">
+              {{ card }}
+              <span class="suspicion-result">({{ getSuspicionForCard(card) }})</span>
+            </li>
+          </ul>
         </p>
-        <p><strong>账号:</strong>
-        <ul>
-          <li v-for="account in item.person_account" :key="account">{{ account }}</li>
-        </ul>
+        <p><span class="info-title">账号:</span>
+          <a @click="toggleShowAccounts(item)">显示账号 ({{ item.person_account.length }})</a>
+          <ul v-if="item.showAccounts">
+            <li v-for="account in item.person_account" :key="account">{{ account }}</li>
+          </ul>
         </p>
-        <div>
+        <!-- <div>
           <strong>模型检测结果:</strong>
           <p>{{ item.model_result }}</p>
-        </div>
-        <div>
-          <strong>人工审核信息:</strong>
+        </div> -->
+        <div class="review-section">
+          <strong>审核结果:</strong>
           <a-textarea v-model:value="item.manual_review" placeholder="请输入人工审核信息"></a-textarea>
-          <!-- <input v-model="item.manual_review" placeholder="请输入人工审核信息" /> -->
-          <a-button type="primary" @click="saveReview(item, index)">{{ item.isSaved ? '修改' : '保存' }}</a-button>
+          <a-button type="primary" size="small" @click="saveReview(item, index)" class="save-button">{{ item.isSaved ? '修改' : '保存' }}</a-button>
         </div>
       </div>
     </div>
@@ -60,6 +64,7 @@ export default {
     return {
       infoItems: [],
       totalItems: 0,
+      suspicionData: [], // 用于存储模型检测结果
     };
   },
   watch: {
@@ -76,6 +81,24 @@ export default {
       const user = this.infoItems.find(item => item.person_number === person_number);
       user.expanded = !user.expanded;
     },
+    toggleShowCards(item) {
+      item.showCards = !item.showCards;
+    },
+    toggleShowAccounts(item) {
+      item.showAccounts = !item.showAccounts;
+    },
+    async fetchSuspicionData() {
+      try {
+        const response = await axios.get('http://127.0.0.1:3091/getSuspicionData');
+        this.suspicionData = response.data;
+      } catch (error) {
+        console.error('Error fetching suspicion data:', error);
+      }
+    },
+    getSuspicionForCard(card) {
+      const suspicionInfo = this.suspicionData.find(item => item.card === card);
+      return suspicionInfo ? suspicionInfo.suspicion.toFixed(2) : '空';
+    },
     async fetchUserData(query, page, pageSize) {
       try {
         console.log(`Fetching data with query: ${query}, page: ${page}, pageSize: ${pageSize}`);
@@ -86,6 +109,9 @@ export default {
         this.infoItems = response.data.items.map(user => ({
           ...user,
           expanded: false,
+          isSaved: !!user.manual_review, // 如果有人工审核信息，则设置 isSaved 为 true
+          showCards: false, // 初始化 showCards
+          showAccounts: false, // 初始化 showAccounts
         }));
         console.log("Info items:", this.infoItems);
         this.totalItems = response.data.total;
@@ -120,11 +146,17 @@ export default {
     },
   },
 
-  mounted() {
-    // 初次加载第一页数据
-    // this.fetchUserData(this.searchQuery, this.currentPage, this.pageSize);
-  },
-};
+//   mounted() {
+//     this.fetchSuspicionData();
+//     // 初次加载第一页数据
+//     // this.fetchUserData(this.searchQuery, this.currentPage, this.pageSize);
+//   },
+// };
+    async mounted() {
+        await this.fetchSuspicionData(); // 获取模型检测结果数据
+        this.fetchUserData(this.searchQuery, this.currentPage, this.pageSize); // 初次加载第一页数据
+      },
+    };
 </script>
 
 <style scoped>
@@ -137,35 +169,49 @@ export default {
 
 .user-info {
   margin-bottom: 10px;
-  /* 减少外部空白 */
   padding: 5px;
-  /* 减少内部空白 */
   border: 1px solid #d9d9d9;
   border-radius: 2px;
-  /* 减少边框圆角 */
   cursor: pointer;
   font-size: 14px;
-  /* 调整字体大小 */
 }
 
 .user-info h3 {
   font-size: 16px;
-  /* 调整标题字体大小 */
 }
 
 .user-info p {
   font-size: 14px;
-  /* 调整段落字体大小 */
+}
+
+.user-info .info-title {
+  font-weight: bold;
+  color: #333;
+}
+
+.user-info .info-detail {
+  color: #555;
 }
 
 .user-info ul {
   font-size: 14px;
-  /* 调整列表字体大小 */
 }
 
-.user-info a-textarea {
+.review-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.review-section a-textarea {
+  flex: 1;
   font-size: 14px;
-  /* 调整文本框字体大小 */
+}
+
+.save-button {
+  font-size: 12px;
+  height: 30px;
+  line-height: 1.5;
 }
 
 .pagination-wrapper {
@@ -176,7 +222,6 @@ export default {
 
 .ant-pagination-options {
   display: none !important;
-  /* 强制隐藏几条一页的选项 */
 }
 
 .ant-pagination-item-active {
@@ -208,5 +253,11 @@ export default {
 
 .ant-pagination-item:hover {
   border-color: #1890ff;
+}
+
+.suspicion-result {
+  font-weight: bold;
+  color: #f56c6c; /* 可以根据需求修改颜色 */
+  margin-left: 10px; /* 调整结果和卡号之间的距离 */
 }
 </style>

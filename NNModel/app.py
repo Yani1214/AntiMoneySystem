@@ -10,7 +10,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
 from uuid import uuid4
 from collections import defaultdict
-from sqlalchemy.orm import sessionmaker
+# from sqlalchemy.orm import sessionmaker
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -169,8 +170,7 @@ def get_user_info():
             base_query = base_query.filter(People.person_name.like(f"%{query}%"))
 
         users = base_query.all()
-        print(f"Total records found: {len(users)}")
-
+        
         user_dict = defaultdict(lambda: {
             'person_number': None,
             'person_name': None,
@@ -209,8 +209,8 @@ def get_user_info():
                 'person_number': value['person_number'],
                 'person_name': value['person_name'],
                 'person_id': value['person_id'],
-                'person_card': list(value['person_card']),
-                'person_account': list(value['person_account']),
+                'person_card': list(value['person_card']),  # 去重
+                'person_account': list(value['person_account']),  # 去重
                 'bank_name': value['bank_name'],
                 'task_id': value['task_id'],
                 'summary': value['summary'],
@@ -222,8 +222,6 @@ def get_user_info():
         start = (page - 1) * page_size
         end = start + page_size
         paginated_results = merged_results[start:end]
-
-        # session.close()
 
         return jsonify({
             'total': total,
@@ -265,14 +263,26 @@ def save_manual_review():
         print(f"Error: {e}")
         db.session.rollback()  # 出错时回滚
         return jsonify({'error': 'An error occurred while saving manual review.'}), 500
+    
+@app.route('/getSuspicionData', methods=['GET'])
+def get_suspicion_data():
+    try:
+        with open('caseAnalysis/data/suspicion_card.json', 'r') as file:
+            suspicion_data = json.load(file)
+        return jsonify(suspicion_data)
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({
+            'error': 'An error occurred while fetching suspicion data.'
+        }), 500
 
 #######################################注册蓝图#################################
 from process import upload_blueprint,byhand_blueprint
-from caseAnalysis import analysis_blueprint
+# from caseAnalysis import analysis_blueprint
 
 app.register_blueprint(upload_blueprint)
 app.register_blueprint(byhand_blueprint)
-app.register_blueprint(analysis_blueprint)
+# app.register_blueprint(analysis_blueprint)
 
 ################################################################################
 
