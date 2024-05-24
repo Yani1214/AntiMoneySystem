@@ -23,10 +23,10 @@
             <li v-for="account in item.person_account" :key="account">{{ account }}</li>
           </ul>
         </p>
-        <div>
+        <!-- <div>
           <strong>模型检测结果:</strong>
           <p>{{ item.model_result }}</p>
-        </div>
+        </div> -->
         <div class="review-section">
           <strong>审核结果:</strong>
           <a-textarea v-model:value="item.manual_review" placeholder="请输入人工审核信息"></a-textarea>
