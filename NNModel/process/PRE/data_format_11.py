@@ -46,8 +46,12 @@ def fill_name_munber(name_to_number):
     df = df.dropna(subset=['person_name'])
     # 添加id列,填充person_number列
     df["person_number"] = df["person_name"].map(name_to_number)
+    # 清理person_number字段中的回车符
+    df['person_number'] = df['person_number'].str.replace('\r', '').str.strip()
     df['manual_review'] = ''
     df['id'] = ''
+    for index, row in df.iterrows():
+        df.loc[index, 'id'] = index + 1
     # 将df文件存储到新路径
     df.to_csv('NNModel/process/database/identity/people.csv', index=False, encoding='utf-8')
         
