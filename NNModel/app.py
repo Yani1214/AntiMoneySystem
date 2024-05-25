@@ -267,7 +267,7 @@ def save_manual_review():
 @app.route('/getSuspicionData', methods=['GET'])
 def get_suspicion_data():
     try:
-        with open('caseAnalysis/data/suspicion_card.json', 'r') as file:
+        with open('NNModel/caseAnalysis/data/suspicion_card.json', 'r') as file:
             suspicion_data = json.load(file)
         return jsonify(suspicion_data)
     except Exception as e:
@@ -278,11 +278,11 @@ def get_suspicion_data():
 
 #######################################注册蓝图#################################
 from process import upload_blueprint,byhand_blueprint
-# from caseAnalysis import analysis_blueprint
+from caseAnalysis import analysis_blueprint
 
 app.register_blueprint(upload_blueprint)
 app.register_blueprint(byhand_blueprint)
-# app.register_blueprint(analysis_blueprint)
+app.register_blueprint(analysis_blueprint)
 
 ################################################################################
 

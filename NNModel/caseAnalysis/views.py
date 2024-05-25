@@ -182,7 +182,7 @@ def analysis_file():
 @analysis_blueprint.route('/trace', methods=['POST'])
 def trace_file():
     data = request.json
-    trace_data = kbknr()
-    return jsonify({'result': 'ok','data':trace_data}), 200
+    trace_data,group_data = kbknr()
+    return jsonify({'result': 'ok','data':trace_data,'group':group_data}), 200
 
 

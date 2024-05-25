@@ -5,7 +5,7 @@ import { ZyNotification } from "../libs/util.toast";
 import router from "@/router";
 // 创建 Axios 实例
 const instance = axios.create({
-  timeout: 5000
+  timeout: 10000
 });
 // 请求拦截器
 instance.interceptors.request.use(

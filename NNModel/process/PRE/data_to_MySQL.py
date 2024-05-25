@@ -107,7 +107,9 @@ def people_to_db():
         task_id VARCHAR(255),
         summary VARCHAR(255),
         label INT,
-        person_number VARCHAR(255)
+        person_number VARCHAR(255),
+        manual_review VARCHAR(255),
+        id INT,
         )
         '''
     cursor.execute(create_table_query)

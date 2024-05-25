@@ -8,6 +8,8 @@
     <div style="width:100%;height:600px">
       <div ref="graph" style="width:100%;height:600px"></div>
     </div>
+
+    <GroupList />
   </section>
 </template>
 
@@ -16,6 +18,7 @@ import echarts from 'echarts';
 import { reactive, ref, toRaw } from 'vue';
 import { ZyNotification } from 'libs/util.toast';
 import { analysisTrace } from 'api/modules/api.analysis';
+import GroupList from './GroupList.vue';
 
 function getColorByImportance(importance) {
   // 根据重要性计算颜色值
@@ -41,6 +44,9 @@ function getColorByImportance(importance) {
 }
 
 export default {
+  components: {
+    GroupList,
+  },
   setup() {
     const state = reactive({
       show: {
@@ -108,24 +114,23 @@ export default {
         const result = await session.run(readQuery, {});
         const records = result.records;
 
+        console.log(records)
+
         records.forEach(record => {
-          if (record._fields[0].properties.trans_name !== undefined) {
+
             this.echartsData.push({
               name: record._fields[0].identity.low.toString(),
-              displayName: record._fields[0].properties.trans_name,
+              displayName: record._fields[0].properties.trans_name !== undefined ? record._fields[0].properties.trans_name : record._fields[0].properties.cp_name,
               category: 'FROM',
               symbolSize: 60 // 默认初始大小
             });
-          }
 
-          if (record._fields[2].properties.cp_name !== undefined) {
             this.echartsData.push({
               name: record._fields[2].identity.low.toString(),
-              displayName: record._fields[2].properties.cp_name,
+              displayName: record._fields[2].properties.cp_name !== undefined ? record._fields[2].properties.cp_name : record._fields[2].properties.trans_name,
               category: 'TO',
               symbolSize: 60 // 默认初始大小
             });
-          }
 
           this.nodesRelation.push({
             source: record._fields[1].start.low.toString(),
@@ -205,6 +210,8 @@ export default {
           }
         ]
       };
+      console.log(this.echartsData)
+      console.log(this.echartsNode)
 
       this.myChart = this.$echarts.init(this.$refs.graph);
       this.myChart.setOption(options);
