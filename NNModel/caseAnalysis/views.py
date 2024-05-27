@@ -63,7 +63,7 @@ def process_json_file(file_path, suspicion_data):
 
 def create_nodes_and_relationships(transaction, data):
     for record in data:
-        trans_account = record.get('trans_account')
+        trans_card = record.get('trans_card')
         trans_name = record.get('trans_name')
         id_number = record.get('id_number')
         trans_amount = record.get('trans_amount')
@@ -77,8 +77,8 @@ def create_nodes_and_relationships(transaction, data):
 
         # 创建节点1
         transaction.run(
-            "MERGE (node1:Node1 {trans_account: $trans_account, trans_name: $trans_name, id_number: $id_number})",
-            trans_account=trans_account, trans_name=trans_name, id_number=id_number
+            "MERGE (node1:Node1 {trans_card: $trans_card, trans_name: $trans_name, id_number: $id_number})",
+            trans_card=trans_card, trans_name=trans_name, id_number=id_number
         )
 
         # 创建节点2
@@ -90,21 +90,21 @@ def create_nodes_and_relationships(transaction, data):
         # 创建节点1和节点2之间的关系，并设置关系属性
         if py_indicator == '1':
             transaction.run(
-                "MATCH (node1:Node1 {trans_account: $trans_account}), (node2:Node2 {cp_card: $cp_card}) "
+                "MATCH (node1:Node1 {trans_card: $trans_card}), (node2:Node2 {cp_card: $cp_card}) "
                 "MERGE (node1)-[r:TRANSACTS_TO]->(node2) "
                 "SET  r.trans_amount = $trans_amount, r.py_indicator = $py_indicator, "
                 " r.label = $label, r.trans_source = $trans_source",
-                trans_account=trans_account, cp_card=cp_card,
+                trans_card=trans_card, cp_card=cp_card,
                 trans_amount=trans_amount, py_indicator=py_indicator,
                 label=label, trans_source=trans_source
             )
         elif py_indicator == '0':
             transaction.run(
-                "MATCH (node1:Node1 {trans_account: $trans_account}), (node2:Node2 {cp_card: $cp_card}) "
+                "MATCH (node1:Node1 {trans_card: $trans_card}), (node2:Node2 {cp_card: $cp_card}) "
                 "MERGE (node2)-[r:TRANSACTS_TO]->(node1) "
                 "SET  r.trans_amount = $trans_amount, r.py_indicator = $py_indicator, "
                 " r.label = $label, r.trans_source = $trans_source",
-                trans_account=trans_account, cp_card=cp_card,
+                trans_card=trans_card, cp_card=cp_card,
                 trans_amount=trans_amount, py_indicator=py_indicator,
                 label=label, trans_source=trans_source
             )

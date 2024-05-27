@@ -279,10 +279,12 @@ def get_suspicion_data():
 #######################################注册蓝图#################################
 from process import upload_blueprint,byhand_blueprint
 from caseAnalysis import analysis_blueprint
+from charts import charts_blueprint
 
 app.register_blueprint(upload_blueprint)
 app.register_blueprint(byhand_blueprint)
 app.register_blueprint(analysis_blueprint)
+app.register_blueprint(charts_blueprint)
 
 ################################################################################
 

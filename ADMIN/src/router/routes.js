@@ -79,15 +79,15 @@ const frameIn = [
       },
 
       {
-        path: "/dataCenter",
-        name: "dataCenter",
+        path: "/dir-charts-info",
+        name: "dir-charts-info",
         meta: {
           cache: true,
           title: "交易数据分布",
           requiresAuth: false,
           icon: "cengji"
         },
-        component: () => import("@/views/demo/dataCenter/index.vue")
+        component: () => import("@/views/charts/dir-charts-info.vue")
       },
 
       // 重定向页面 必须保留

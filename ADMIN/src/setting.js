@@ -30,7 +30,6 @@ export default {
         list: [
             {
                 name: '金色沙滩',
-                fixed: true,
                 value: {
                     primaryColor: '#d2b48c',
                     errorColor: '#c98a7d',
@@ -85,6 +84,7 @@ export default {
             },
             {
                 "name": "蓝天白云",
+                fixed: true,
                 "value": {
                     "primaryColor": "#4fa1b1",
                     "errorColor": "#8b4172",
