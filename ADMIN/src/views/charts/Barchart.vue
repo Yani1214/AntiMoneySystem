@@ -5,11 +5,15 @@
 <script>
 import * as echarts from 'echarts';
 import 'echarts/theme/macarons'; // 引入主题
-import {reactive, toRaw, markRaw} from 'vue';
+import {reactive, toRaw, markRaw,watch,defineProps} from 'vue';
 import { chartsGroup,chartsPerson } from 'api/modules/api.charts';
 
 export default {
   name: 'BarChart', // 修改为柱状图组件名称
+  props: {
+    searchValue: String,
+    update: String
+  },
   setup(){
     const state = reactive({
     show: {
@@ -44,12 +48,23 @@ export default {
     });
       return { state };
   },
+  
   data() {
     return {
       chartBar: null // 更正变量名
     }
   },
   mounted() {
+    // 监听 searchValue 变化，触发 getPerson 事件
+    this.$watch(() => this.$props.searchValue, (newValue) => {
+      this.getPerson(newValue);
+  });
+    this.$watch(() => this.$props.update, (newValue, oldValue) => {
+      if (newValue !== oldValue) {
+        this.getGroup();
+      }
+    });
+
     this.$nextTick(() => {
       this.getGroup(); // 调用绘制柱状图的方法
     })
@@ -112,13 +127,17 @@ export default {
     },
     // 加载数据
     getGroup(){
+      // 清除之前的图表
+      if (this.chartBar) {
+        this.chartBar.dispose();
+        this.chartBar = null;
+      }
       this.state.loading.spinning = true
       // 将响应式query返回起原始对象
       let p = toRaw(this.state.query)
       chartsGroup(p).then(res => {
         this.state.loading.spinning = false
         this.barData = res.bar
-        console.log(res.pie)
         this.drawBarChart(); // 在数据获取后调用绘图方法
       }).catch(err => {
         this.state.loading.spinning = false
@@ -126,19 +145,24 @@ export default {
       })
     },
 
-    // getPerson(){
-    //   this.state.loading.spinning = true
-    //   // 将响应式query返回起原始对象
-    //   let p = toRaw(this.state.query)
-    //   chartsPerson(p).then(res => {
-    //     this.state.loading.spinning = false
-    //     let datas = res.group
-    //     this.state.dataList = datas
-    //   }).catch(err => {
-    //     this.state.loading.spinning = false
-    //     console.log(err)
-    //   })
-    // }
+    getPerson(searchValue){
+      // 清除之前的图表
+      if (this.chartBar) {
+        this.chartBar.dispose();
+        this.chartBar = null;
+      }
+      this.state.loading.spinning = true
+      // 将响应式query返回起原始对象
+      let p = { 'data': searchValue };
+      chartsPerson(p).then(res => {
+        this.state.loading.spinning = false
+        this.barData = res.bar
+        this.drawBarChart();
+      }).catch(err => {
+        this.state.loading.spinning = false
+        console.log(err)
+      })
+    }
 
   }
 }

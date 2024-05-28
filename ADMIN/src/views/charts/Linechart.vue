@@ -11,6 +11,10 @@
 
 export default {
     name: 'Linechart',
+    props: {
+    searchValue: String,
+    update: String
+  },
     setup(){
     const state = reactive({
     show: {
@@ -51,6 +55,17 @@ export default {
       }
     },
     mounted() {
+      // 监听 searchValue 变化，触发 getPerson 事件
+      this.$watch(() => this.$props.searchValue, (newValue, oldValue) => {
+        if (newValue !== oldValue) {
+          this.getPerson(newValue);
+        }
+      });
+      this.$watch(() => this.$props.update, (newValue, oldValue) => {
+      if (newValue !== oldValue) {
+        this.getGroup();
+      }
+    });
       this.$nextTick(() => {
         this.getGroup();
       })
@@ -109,32 +124,43 @@ export default {
       },
         // 加载数据
         getGroup(){
-            this.state.loading.spinning = true
-            // 将响应式query返回起原始对象
-            let p = toRaw(this.state.query)
-            chartsGroup(p).then(res => {
-                this.state.loading.spinning = false
-                this.lineData = res.line
-                console.log(res.line)
-                this.drawLineChart(); // 在数据获取后调用绘图方法
-            }).catch(err => {
-                this.state.loading.spinning = false
-                console.log(err)
-            })
+          // 清除之前的图表
+          if (this.chartLine) {
+            this.chartLine.dispose();
+            this.chartLine = null;
+          }
+          this.state.loading.spinning = true
+          // 将响应式query返回起原始对象
+          let p = toRaw(this.state.query)
+          chartsGroup(p).then(res => {
+              this.state.loading.spinning = false
+              this.lineData = res.line
+              console.log(res.line)
+              this.drawLineChart(); // 在数据获取后调用绘图方法
+          }).catch(err => {
+              this.state.loading.spinning = false
+              console.log(err)
+          })
         },
-        // getPerson(){
-        //   this.state.loading.spinning = true
-        //   // 将响应式query返回起原始对象
-        //   let p = toRaw(this.state.query)
-        //   chartsPerson(p).then(res => {
-        //     this.state.loading.spinning = false
-        //     let datas = res.group
-        //     this.state.dataList = datas
-        //   }).catch(err => {
-        //     this.state.loading.spinning = false
-        //     console.log(err)
-        //   })
-        // }
+
+        getPerson(searchValue){
+          // 清除之前的图表
+          if (this.chartLine) {
+            this.chartLine.dispose();
+            this.chartLine = null;
+          }
+          this.state.loading.spinning = true
+          // 将响应式query返回起原始对象
+          let p = { 'data': searchValue };
+          chartsPerson(p).then(res => {
+            this.state.loading.spinning = false
+            this.lineData = res.line
+            this.drawLineChart();
+          }).catch(err => {
+            this.state.loading.spinning = false
+            console.log(err)
+          })
+        }
     }
   }
 </script>

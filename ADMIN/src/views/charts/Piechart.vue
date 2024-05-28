@@ -7,15 +7,14 @@ import * as echarts from 'echarts';
 import {reactive, toRaw} from 'vue';
 import 'echarts/theme/shine'; //引入主题
 import { chartsGroup,chartsPerson } from 'api/modules/api.charts';
+import { int } from 'neo4j-driver';
 
 export default {
   name: 'Pinechart', 
-  // props: {
-  //   triggerGetPerson: {
-  //     type: Boolean,
-  //     default: false
-  //   }
-  // },
+  props: {
+    searchValue: String,
+    update: String
+  },
   setup(){
     const state = reactive({
     show: {
@@ -56,17 +55,23 @@ export default {
       }
   },
   mounted() {
+    // 监听 searchValue 变化，触发 getPerson 事件
+    this.$watch(() => this.$props.searchValue, (newValue, oldValue) => {
+        if (newValue !== oldValue) {
+          this.getPerson(newValue);
+        }
+      });
+      this.$watch(() => this.$props.update, (newValue, oldValue) => {
+      if (newValue !== oldValue) {
+        this.getGroup();
+      }
+    });
+
       this.$nextTick(() => {
         this.getGroup();
       })
   },
-  // watch: {
-  //   triggerGetPerson(newVal) {
-  //     if (newVal) {
-  //       this.getPerson();
-  //     }
-  //   }
-  // },
+
   methods: {
     formatPieData(data) {
       return data.map(item => {
@@ -90,8 +95,8 @@ export default {
       this.chartPie = echarts.init(document.getElementById('chartPie'),'shine');
       this.chartPie.setOption({
         title: {
-          text: '涉案交易分布图',
-          subtext: '每人所占的涉案交易条数', // 这里分为洗钱团伙和个人
+          text: this.pieText.main,
+          subtext: this.pieText.sub, // 这里分为洗钱团伙和个人
           x: 'center'
         },
         tooltip: {
@@ -106,7 +111,7 @@ export default {
         },
         series: [
           {
-            name: '交易对象',
+            name: '交易人员',
             type: 'pie',
             radius: ['50%', '70%'],
             center: ['50%', '50%'],
@@ -122,33 +127,49 @@ export default {
     },
     // 加载数据
     getGroup(){
+      // 清除之前的图表
+      if (this.chartPie) {
+        this.chartPie.dispose();
+        this.chartPie = null;
+      }
       this.state.loading.spinning = true
       // 将响应式query返回起原始对象
       let p = toRaw(this.state.query)
       chartsGroup(p).then(res => {
         this.state.loading.spinning = false
         this.pieData = res.pie
+        this.pieText = res.text
         console.log(res.pie)
+        console.log(res.text)
         this.drawPieChart(); // 在数据获取后调用绘图方法
+        this.$emit('updateResult',this.update);
       }).catch(err => {
         this.state.loading.spinning = false
         console.log(err)
       })
     },
 
-    // getPerson(){
-    //   this.state.loading.spinning = true
-    //   // 将响应式query返回起原始对象
-    //   let p = toRaw(this.state.query)
-    //   chartsPerson(p).then(res => {
-    //     this.state.loading.spinning = false
-    //     let datas = res.group
-    //     this.state.dataList = datas
-    //   }).catch(err => {
-    //     this.state.loading.spinning = false
-    //     console.log(err)
-    //   })
-    // }
+    getPerson(searchValue){
+      // 清除之前的图表
+      if (this.chartPie) {
+        this.chartPie.dispose();
+        this.chartPie = null;
+      }
+      this.state.loading.spinning = true
+      // 将响应式query返回起原始对象
+      let p = { 'data': searchValue };
+      chartsPerson(p).then(res => {
+        this.state.loading.spinning = false
+        this.pieData = res.pie
+        this.pieText = res.text
+        console.log(res.text)
+        this.drawPieChart();
+        this.$emit('searchResult', searchValue);
+      }).catch(err => {
+        this.state.loading.spinning = false
+        console.log(err)
+      })
+    }
 
   }
 }
