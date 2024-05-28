@@ -12,6 +12,7 @@ from uuid import uuid4
 from collections import defaultdict
 # from sqlalchemy.orm import sessionmaker
 import json
+import re
 
 app = Flask(__name__)
 CORS(app)
@@ -20,10 +21,10 @@ api = Api(app)
 
 # 设置数据库连接地址
 # 设置第一个数据库连接地址
-DB_URI_1 = 'mysql+pymysql://root:XYZ67520x@localhost:3306/mealpass?charset=utf8mb4'
+DB_URI_1 = 'mysql+pymysql://root:12345678@localhost:3306/mealpass?charset=utf8mb4'
 app.config['SQLALCHEMY_BINDS'] = {
     'db1': DB_URI_1,
-    'db2': 'mysql+pymysql://root:XYZ67520x@localhost:3306/test?charset=utf8mb4'
+    'db2': 'mysql+pymysql://root:12345678@localhost:3306/anti-money?charset=utf8mb4'
 }
 # 是否追踪数据库修改，一般不开启, 会影响性能
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -39,6 +40,11 @@ metadata_obj = MetaData()
 
 # 生成盐
 salt = bcrypt.gensalt()
+
+def clean_card_number(card):
+    # 去除所有空白字符，包括空格、制表符等
+    return re.sub(r'\s+', '', card)
+
 
 # 创建用户表
 class User(db.Model):
@@ -175,12 +181,9 @@ def get_user_info():
             'person_number': None,
             'person_name': None,
             'person_id': None,
-            'person_card': set(),
-            'person_account': set(),
-            'bank_name': None,
-            'task_id': None,
-            'summary': None,
-            'label': None,
+            'person_card': [],
+            'person_account': [],
+            'labels': [],
             'manual_review': None,
         })
 
@@ -189,19 +192,16 @@ def get_user_info():
                 user_dict[user.person_number]['person_number'] = user.person_number
                 user_dict[user.person_number]['person_name'] = user.person_name
                 user_dict[user.person_number]['person_id'] = user.person_id
-                user_dict[user.person_number]['bank_name'] = user.bank_name
-                user_dict[user.person_number]['task_id'] = user.task_id
-                user_dict[user.person_number]['summary'] = user.summary
-                user_dict[user.person_number]['label'] = user.label
                 user_dict[user.person_number]['manual_review'] = user.manual_review
 
             cleaned_person_card = user.person_card.strip() if user.person_card else None
             cleaned_person_account = user.person_account.strip() if user.person_account else None
 
             if cleaned_person_card:
-                user_dict[user.person_number]['person_card'].add(cleaned_person_card)
+                user_dict[user.person_number]['person_card'].append(cleaned_person_card)
+                user_dict[user.person_number]['labels'].append(user.label)  # 添加标签
             if cleaned_person_account:
-                user_dict[user.person_number]['person_account'].add(cleaned_person_account)
+                user_dict[user.person_number]['person_account'].append(cleaned_person_account)
 
         merged_results = []
         for key, value in user_dict.items():
@@ -209,12 +209,9 @@ def get_user_info():
                 'person_number': value['person_number'],
                 'person_name': value['person_name'],
                 'person_id': value['person_id'],
-                'person_card': list(value['person_card']),  # 去重
-                'person_account': list(value['person_account']),  # 去重
-                'bank_name': value['bank_name'],
-                'task_id': value['task_id'],
-                'summary': value['summary'],
-                'label': value['label'],
+                'person_card': value['person_card'],  # 保持顺序
+                'person_account': value['person_account'],  # 保持顺序
+                'labels': value['labels'],  # 保持顺序
                 'manual_review': value['manual_review'],
             })
 
@@ -267,7 +264,7 @@ def save_manual_review():
 @app.route('/getSuspicionData', methods=['GET'])
 def get_suspicion_data():
     try:
-        with open('NNModel/caseAnalysis/data/suspicion_card.json', 'r') as file:
+        with open('caseAnalysis/data/suspicion_card.json', 'r') as file:
             suspicion_data = json.load(file)
         return jsonify(suspicion_data)
     except Exception as e:
@@ -275,15 +272,50 @@ def get_suspicion_data():
         return jsonify({
             'error': 'An error occurred while fetching suspicion data.'
         }), 500
-
+    
+@app.route('/updateLabel', methods=['POST'])
+def update_label():
+    try:
+        data = request.get_json()
+        person_number = data['person_number']
+        card = clean_card_number(data['card'])
+        label = data['label']
+        print(label)
+        
+        # 打印接收到的数据
+        print(f"Received data: person_number={person_number}, card={card}, label={label}")
+        
+        # 更新数据库，找到符合 person_number 的所有记录
+        users = People.query.filter_by(person_number=person_number).all()
+        
+        # 打印查询到的用户记录
+        print(f"Found users: {users}")
+        
+        if users:
+            matched_users = [user for user in users if clean_card_number(user.person_card) == card]
+            if matched_users:
+                for user in matched_users:
+                    print("label")
+                    print(label)
+                    user.label = label
+                db.session.commit()
+                return jsonify({'success': True})
+            else:
+                return jsonify({'success': False, 'message': 'Card not found'}), 404
+        else:
+            return jsonify({'success': False, 'message': 'User not found'}), 404
+    except Exception as e:
+        db.session.rollback()  # 出现错误时回滚事务
+        print(f"Error: {e}")
+        return jsonify({'success': False, 'message': 'An error occurred while updating label.'}), 500
 #######################################注册蓝图#################################
 from process import upload_blueprint,byhand_blueprint
-from caseAnalysis import analysis_blueprint
+# from caseAnalysis import analysis_blueprint
 from charts import charts_blueprint
 
 app.register_blueprint(upload_blueprint)
 app.register_blueprint(byhand_blueprint)
-app.register_blueprint(analysis_blueprint)
+# app.register_blueprint(analysis_blueprint)
 app.register_blueprint(charts_blueprint)
 
 ################################################################################

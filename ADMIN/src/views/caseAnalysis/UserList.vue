@@ -11,9 +11,13 @@
         <p><span class="info-title">卡号:</span>
           <a @click="toggleShowCards(item)">显示卡号 ({{ item.person_card.length }})</a>
           <ul v-if="item.showCards">
-            <li v-for="card in item.person_card" :key="card">
-              {{ card }}
-              <span class="suspicion-result">({{ getSuspicionForCard(card) }})</span>
+            <li v-for="cardInfo in item.cardLabels" :key="cardInfo.card" class="card-info">
+              <span class="card-number">{{ cardInfo.card }}</span>
+              <span class="suspicion-result">({{ getSuspicionForCard(cardInfo.card) }})</span>
+              <a-select v-model:value="cardInfo.label" size="small" class="label-select" @change="value => updateLabel(item, cardInfo.card, value)">
+                <a-select-option value="0">0</a-select-option>
+                <a-select-option value="1">1</a-select-option>
+              </a-select>
             </li>
           </ul>
         </p>
@@ -23,10 +27,6 @@
             <li v-for="account in item.person_account" :key="account">{{ account }}</li>
           </ul>
         </p>
-        <!-- <div>
-          <strong>模型检测结果:</strong>
-          <p>{{ item.model_result }}</p>
-        </div> -->
         <div class="review-section">
           <strong>审核结果:</strong>
           <a-textarea v-model:value="item.manual_review" placeholder="请输入人工审核信息"></a-textarea>
@@ -34,10 +34,8 @@
         </div>
       </div>
     </div>
-    <!-- 分页控件 -->
     <div class="pagination-wrapper">
-      <a-pagination :current="currentPage" :total="totalItems" :pageSize="pageSize" :pageSizeOptions="[]"
-        @change="handlePageChange" show-total show-quick-jumper hideOnSinglePage />
+      <a-pagination :current="currentPage" :total="totalItems" :pageSize="pageSize" :pageSizeOptions="[]" @change="handlePageChange" show-total show-quick-jumper hideOnSinglePage />
     </div>
   </div>
 </template>
@@ -112,11 +110,34 @@ export default {
           isSaved: !!user.manual_review, // 如果有人工审核信息，则设置 isSaved 为 true
           showCards: false, // 初始化 showCards
           showAccounts: false, // 初始化 showAccounts
+          // 初始化 cardLabels 时绑定每个卡号对应的标签
+          cardLabels: user.person_card.map((card, index) => ({
+            card,
+            label: user.labels[index] // 绑定每个卡号的标签
+          }))
         }));
         console.log("Info items:", this.infoItems);
         this.totalItems = response.data.total;
       } catch (error) {
         console.error('Error fetching user data:', error);
+      }
+    },
+    async updateLabel(item, card, value) {
+      try {
+        const response = await axios.post('http://127.0.0.1:3091/updateLabel', {
+          person_number: item.person_number,
+          card: card,
+          label: value
+        });
+        if (response.data.success) {
+          this.$message.success('标签更新成功');
+          // 确保本地数据也更新
+        } else {
+          this.$message.error('标签更新失败');
+        }
+      } catch (error) {
+        console.error('Error updating label:', error);
+        this.$message.error('标签更新失败，请稍后再试');
       }
     },
     async saveReview(item, index) {
@@ -145,13 +166,6 @@ export default {
       this.fetchUserData(this.searchQuery, page, this.pageSize);
     },
   },
-
-//   mounted() {
-//     this.fetchSuspicionData();
-//     // 初次加载第一页数据
-//     // this.fetchUserData(this.searchQuery, this.currentPage, this.pageSize);
-//   },
-// };
     async mounted() {
         await this.fetchSuspicionData(); // 获取模型检测结果数据
         this.fetchUserData(this.searchQuery, this.currentPage, this.pageSize); // 初次加载第一页数据
@@ -195,6 +209,32 @@ export default {
 
 .user-info ul {
   font-size: 14px;
+}
+
+.card-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-number {
+  flex: 2;
+  width: 40%;
+  text-align: left;
+}
+
+.suspicion-result {
+  flex: 1;
+  width: 30%;
+  text-align: center;
+}
+
+.label-select {
+  flex: 1;
+  width: 30%;
+  font-size: 12px;
+  height: 24px;
+  text-align: right;
 }
 
 .review-section {
@@ -258,6 +298,5 @@ export default {
 .suspicion-result {
   font-weight: bold;
   color: #f56c6c; /* 可以根据需求修改颜色 */
-  margin-left: 10px; /* 调整结果和卡号之间的距离 */
 }
 </style>
