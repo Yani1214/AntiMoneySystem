@@ -174,7 +174,7 @@ def kbknr():
         query = """
         MATCH (n)
         OPTIONAL MATCH (n:Node1)
-        RETURN id(n) AS id, n.trans_name AS name, n.trans_account AS card
+        RETURN id(n) AS id, n.trans_name AS name, n.trans_card AS card
         UNION
         MATCH (n)
         OPTIONAL MATCH (n:Node2)

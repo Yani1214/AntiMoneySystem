@@ -111,7 +111,7 @@ def create_nodes_and_relationships(transaction, data):
 
 def analysis_trans_data():
     '''
-    1. 从anti-money数据库中搜集people_standard表格中person_card列的所有值并进行去重处理，形成列表
+    1. 从anti-money数据库中搜集people表格中person_card列的所有值并进行去重处理，形成列表
     '''
     # 连接到数据库
     conn = pymysql.connect(**db_config)
@@ -200,9 +200,10 @@ def search_person():
         query = """ SELECT DISTINCT person_name
                     FROM people
                     WHERE REPLACE(REPLACE(person_card, ' ', ''), '\t', '') = REPLACE(REPLACE(%s, ' ', ''), '\t', '') 
-                    OR REPLACE(REPLACE(person_account, ' ', ''), '\t', '') = REPLACE(REPLACE(%s, ' ', ''), '\t', '');
+                    OR REPLACE(REPLACE(person_account, ' ', ''), '\t', '') = REPLACE(REPLACE(%s, ' ', ''), '\t', '')
+                    OR REPLACE(REPLACE(person_id, ' ', ''), '\t', '') = REPLACE(REPLACE(%s, ' ', ''), '\t', '');
                 """
-        cursor.execute(query,(person_id, person_id))
+        cursor.execute(query,(person_id, person_id,person_id))
 
     # 获取查询结果
         result = cursor.fetchall()

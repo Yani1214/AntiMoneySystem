@@ -74,7 +74,7 @@ export default {
       }
       console.log("searchValue:", this.searchValue);
       
-      // #################增加对搜索框输入的判断（不是中文->是卡号或账号############################
+      // #################增加对搜索框输入的判断（不是中文->是卡号或账号或身份证号)############################
       const isChineseName = /[\u4e00-\u9fa5]+/.test(this.searchValue);
       if (!isChineseName){
         let p = { 'data': this.searchValue };
@@ -82,22 +82,20 @@ export default {
           if(res.person.length !== 0){
             this.personValue = res.person[0]
             console.log(res.person)
-            this.resetState();
             this.searchGraph();
             ZyNotification.success('查询成功');
           }
           else{
-            ZyNotification.error('不存在对应的人名，请重新输入');
+            ZyNotification.error('找不到对应的人名，请重新输入');
           }
 
         })
       }
       else{
         this.personValue = this.searchValue
-        this.resetState();
         this.searchGraph();
-        ZyNotification.success('查询成功');
       }
+      this.resetState();
 
       // ########################################################################################
       // this.resetState();
@@ -323,6 +321,12 @@ export default {
           console.log(this.category);
           // console.log(options.series)
           console.log(this, 66633);
+          if(this.echartsData.length !==0){
+            ZyNotification.success('查询成功');
+          }
+          else{
+            ZyNotification.error('输入的人名无效，请重新输入');
+          }
 
           //节点自定义拖拽不回弹
 
@@ -357,9 +361,9 @@ export default {
         // Object.assign(this.$data, this.$options.data.call(this));
         // 获取初始数据对象
         const initialData = this.$options.data.call(this);
-        // 排除 searchValue 属性
+        // 排除 searchValue和personValue 属性
         const { searchValue,personValue, ...restData } = initialData;
-        // 仅复制除了 searchValue 之外的属性到 $data 中
+        // 仅复制除了 searchValue和personValue 之外的属性到 $data 中
         Object.assign(this.$data, restData);
       }
     }

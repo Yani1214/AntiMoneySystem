@@ -271,7 +271,7 @@ def save_manual_review():
 @app.route('/getSuspicionData', methods=['GET'])
 def get_suspicion_data():
     try:
-        with open('caseAnalysis/data/suspicion_card.json', 'r') as file:
+        with open('NNModel/caseAnalysis/data/suspicion_card.json', 'r') as file:
             suspicion_data = json.load(file)
         return jsonify(suspicion_data)
     except Exception as e:
@@ -315,7 +315,7 @@ def update_label():
         return jsonify({'success': False, 'message': 'An error occurred while updating label.'}), 500
 #######################################注册蓝图#################################
 from process import upload_blueprint,byhand_blueprint
-# from caseAnalysis import analysis_blueprint
+from caseAnalysis import analysis_blueprint
 from charts import charts_blueprint
 
 app.register_blueprint(upload_blueprint)
