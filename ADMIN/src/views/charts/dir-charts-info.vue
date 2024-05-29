@@ -50,7 +50,7 @@
     import Barchart from './Barchart.vue';
     import Linechart from './Linechart.vue';
     import Piechart from './Piechart.vue';
-import { ServerInfo } from 'neo4j-driver';
+    import { ServerInfo } from 'neo4j-driver';
 
     const searchValue = ref(''); // 声明 searchValue
     const triggeredSearchValue = ref(''); // 声明 triggeredSearchValue

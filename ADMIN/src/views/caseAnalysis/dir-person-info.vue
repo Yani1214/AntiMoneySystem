@@ -4,7 +4,7 @@
     <div class="search-bar">
       <a-row type="flex" justify="start" align="middle" :gutter="10">
         <a-col :span="18">
-          <a-input v-model:value="searchValue" placeholder="请输入需要查询的用户名称" @pressEnter="search"></a-input>
+          <a-input v-model:value="searchValue" placeholder="请输入需要查询的用户名称或用户账卡号" @pressEnter="search"></a-input>
         </a-col>
         <a-col :span="6">
           <a-button type="primary" size="middle" @click="search">查询</a-button>
@@ -31,6 +31,9 @@
 <script>
   import echarts from "echarts";
   import UserList from "./UserList.vue";
+  import { analysisSearch } from 'api/modules/api.analysis';
+  import { ZyNotification } from 'libs/util.toast';
+  
 
 export default {
   components: {
@@ -46,6 +49,7 @@ export default {
       myChart: '',
       options: {},
       searchValue: '', // 输入框的值
+      personValue: '',
       currentPage: 0, // 当前页码
       totalItems: 0, // 总记录数
       pageSize: 10 // 每页记录数
@@ -69,8 +73,35 @@ export default {
         this.$refs.userList.fetchUserData(this.searchValue, this.currentPage, this.pageSize);
       }
       console.log("searchValue:", this.searchValue);
-      this.resetState();
-      this.searchGraph();
+      
+      // #################增加对搜索框输入的判断（不是中文->是卡号或账号############################
+      const isChineseName = /[\u4e00-\u9fa5]+/.test(this.searchValue);
+      if (!isChineseName){
+        let p = { 'data': this.searchValue };
+        analysisSearch(p).then(res => {
+          if(res.person.length !== 0){
+            this.personValue = res.person[0]
+            console.log(res.person)
+            this.resetState();
+            this.searchGraph();
+            ZyNotification.success('查询成功');
+          }
+          else{
+            ZyNotification.error('不存在对应的人名，请重新输入');
+          }
+
+        })
+      }
+      else{
+        this.personValue = this.searchValue
+        this.resetState();
+        this.searchGraph();
+        ZyNotification.success('查询成功');
+      }
+
+      // ########################################################################################
+      // this.resetState();
+      // this.searchGraph();
     },
     handlePageChange(page) {
       this.currentPage = page;
@@ -102,8 +133,8 @@ export default {
 
           var me = { records: [] };
           // const result = await session.run(readQuery2, {})
-          const result = await session.run(readQuery2, { searchValue: this.searchValue });
-          console.log(this.searchValue);
+          const result = await session.run(readQuery2, { searchValue: this.personValue });
+          console.log(this.personValue);
 
           // console.log(result)
           me.records = result.records;
@@ -327,7 +358,7 @@ export default {
         // 获取初始数据对象
         const initialData = this.$options.data.call(this);
         // 排除 searchValue 属性
-        const { searchValue, ...restData } = initialData;
+        const { searchValue,personValue, ...restData } = initialData;
         // 仅复制除了 searchValue 之外的属性到 $data 中
         Object.assign(this.$data, restData);
       }

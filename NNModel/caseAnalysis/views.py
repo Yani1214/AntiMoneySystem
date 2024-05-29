@@ -186,3 +186,32 @@ def trace_file():
     return jsonify({'result': 'ok','data':trace_data,'group':group_data}), 200
 
 
+@analysis_blueprint.route('/search', methods=['POST'])
+def search_person():
+    data = request.json
+    print(data)
+    person_id = data.get('data')
+
+    # 连接到数据库
+    conn = pymysql.connect(**db_config)
+    cursor = conn.cursor()
+    try:
+    # 执行查询语句，获取 person_card 列的所有值
+        query = """ SELECT DISTINCT person_name
+                    FROM people
+                    WHERE REPLACE(REPLACE(person_card, ' ', ''), '\t', '') = REPLACE(REPLACE(%s, ' ', ''), '\t', '') 
+                    OR REPLACE(REPLACE(person_account, ' ', ''), '\t', '') = REPLACE(REPLACE(%s, ' ', ''), '\t', '');
+                """
+        cursor.execute(query,(person_id, person_id))
+
+    # 获取查询结果
+        result = cursor.fetchall()
+        print(result)
+        person_name = [row[0] for row in result]
+
+    finally:
+    # 确保关闭游标和连接
+        cursor.close()
+        conn.close()
+
+    return jsonify({'person': person_name})

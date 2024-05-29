@@ -21,10 +21,10 @@ api = Api(app)
 
 # 设置数据库连接地址
 # 设置第一个数据库连接地址
-DB_URI_1 = 'mysql+pymysql://root:12345678@localhost:3306/mealpass?charset=utf8mb4'
+DB_URI_1 = 'mysql+pymysql://root:XYZ67520x@localhost:3306/mealpass?charset=utf8mb4'
 app.config['SQLALCHEMY_BINDS'] = {
     'db1': DB_URI_1,
-    'db2': 'mysql+pymysql://root:12345678@localhost:3306/anti-money?charset=utf8mb4'
+    'db2': 'mysql+pymysql://root:XYZ67520x@localhost:3306/test?charset=utf8mb4'
 }
 # 是否追踪数据库修改，一般不开启, 会影响性能
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -264,7 +264,7 @@ def save_manual_review():
 @app.route('/getSuspicionData', methods=['GET'])
 def get_suspicion_data():
     try:
-        with open('caseAnalysis/data/suspicion_card.json', 'r') as file:
+        with open('NNModel/caseAnalysis/data/suspicion_card.json', 'r') as file:
             suspicion_data = json.load(file)
         return jsonify(suspicion_data)
     except Exception as e:
@@ -310,12 +310,12 @@ def update_label():
         return jsonify({'success': False, 'message': 'An error occurred while updating label.'}), 500
 #######################################注册蓝图#################################
 from process import upload_blueprint,byhand_blueprint
-# from caseAnalysis import analysis_blueprint
+from caseAnalysis import analysis_blueprint
 from charts import charts_blueprint
 
 app.register_blueprint(upload_blueprint)
 app.register_blueprint(byhand_blueprint)
-# app.register_blueprint(analysis_blueprint)
+app.register_blueprint(analysis_blueprint)
 app.register_blueprint(charts_blueprint)
 
 ################################################################################

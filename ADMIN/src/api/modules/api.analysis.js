@@ -7,3 +7,7 @@ export const analysisDetection = (data) => {
 export const analysisTrace = (data) => {
     return service.post('/v1/analysis/trace', data)
 }
+
+export const analysisSearch = (data) => {
+    return service.post('/v1/analysis/search', data)
+}
