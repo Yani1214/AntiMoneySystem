@@ -10,7 +10,6 @@
           <h2>{{setting.websiteInfo.desc || '一个反洗钱系统'}}</h2>
           <p style="margin-top: 15px">✨✨✨ 欢迎使用 {{setting.websiteInfo.name || 'NoEscape'}}@{{ setting.websiteInfo.version || '1.0.0' }}！</p>
         </a-col>
-
         <a-col class="login-content-form">
           <LoginForm/>
           <RegisterForm/>

@@ -78,7 +78,7 @@ router.beforeEach(async (to, from, next) => {
 });
 
 router.afterEach((to, from) => {
-  window.document.title = to.meta.title + " - ZY'Admin";
+  window.document.title = to.meta.title + " - NoEscape";
 });
 
 router.onError((error) => {

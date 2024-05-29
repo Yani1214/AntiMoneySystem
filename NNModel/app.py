@@ -65,7 +65,7 @@ class User(db.Model):
 @app.route('/')
 def hello_world():
     hashed = bcrypt.hashpw("123456".encode('utf-8'), salt)
-    print(f"Hashed Password: {hashed.decode('utf-8')}")
+    # print(f"Hashed Password: {hashed.decode('utf-8')}")
     # 返回加密后的字符串
     return hashed
 
@@ -173,7 +173,14 @@ def get_user_info():
     try:
         base_query = People.query
         if query:
-            base_query = base_query.filter(People.person_name.like(f"%{query}%"))
+            base_query = base_query.filter(
+                or_(
+                    People.person_name.like(f"%{query}%"),
+                    People.person_id.like(f"%{query}%"),
+                    People.person_card.like(f"%{query}%"),
+                    People.person_account.like(f"%{query}%")
+                )
+            )
 
         users = base_query.all()
         
@@ -226,7 +233,7 @@ def get_user_info():
         })
 
     except Exception as e:
-        print(f"Error: {e}")
+        # print(f"Error: {e}")
         return jsonify({
             'error': 'An error occurred while fetching user info.'
         }), 500
@@ -238,7 +245,7 @@ def save_manual_review():
         data = request.json
         person_number = data.get('person_number', None)
         manual_review = data.get('manual_review', None)
-        print("Received data:", data)  # 打印请求数据
+        # print("Received data:", data)  # 打印请求数据
         if not person_number or not manual_review:
             return jsonify({'error': 'Invalid input.'}), 400
 
@@ -257,18 +264,18 @@ def save_manual_review():
         return jsonify({'message': 'Manual review saved successfully.'}), 200
 
     except Exception as e:
-        print(f"Error: {e}")
+        # print(f"Error: {e}")
         db.session.rollback()  # 出错时回滚
         return jsonify({'error': 'An error occurred while saving manual review.'}), 500
     
 @app.route('/getSuspicionData', methods=['GET'])
 def get_suspicion_data():
     try:
-        with open('NNModel/caseAnalysis/data/suspicion_card.json', 'r') as file:
+        with open('caseAnalysis/data/suspicion_card.json', 'r') as file:
             suspicion_data = json.load(file)
         return jsonify(suspicion_data)
     except Exception as e:
-        print(f"Error: {e}")
+        # print(f"Error: {e}")
         return jsonify({
             'error': 'An error occurred while fetching suspicion data.'
         }), 500
@@ -280,23 +287,21 @@ def update_label():
         person_number = data['person_number']
         card = clean_card_number(data['card'])
         label = data['label']
-        print(label)
+        # print(label)
         
         # 打印接收到的数据
-        print(f"Received data: person_number={person_number}, card={card}, label={label}")
+        # print(f"Received data: person_number={person_number}, card={card}, label={label}")
         
         # 更新数据库，找到符合 person_number 的所有记录
         users = People.query.filter_by(person_number=person_number).all()
         
         # 打印查询到的用户记录
-        print(f"Found users: {users}")
+        # print(f"Found users: {users}")
         
         if users:
             matched_users = [user for user in users if clean_card_number(user.person_card) == card]
             if matched_users:
                 for user in matched_users:
-                    print("label")
-                    print(label)
                     user.label = label
                 db.session.commit()
                 return jsonify({'success': True})
@@ -306,11 +311,11 @@ def update_label():
             return jsonify({'success': False, 'message': 'User not found'}), 404
     except Exception as e:
         db.session.rollback()  # 出现错误时回滚事务
-        print(f"Error: {e}")
+        # print(f"Error: {e}")
         return jsonify({'success': False, 'message': 'An error occurred while updating label.'}), 500
 #######################################注册蓝图#################################
 from process import upload_blueprint,byhand_blueprint
-from caseAnalysis import analysis_blueprint
+# from caseAnalysis import analysis_blueprint
 from charts import charts_blueprint
 
 app.register_blueprint(upload_blueprint)

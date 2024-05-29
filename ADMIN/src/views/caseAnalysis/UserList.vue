@@ -9,7 +9,7 @@
         <p><span class="info-title">ID:</span> <span class="info-detail">{{ item.person_number }}</span></p>
         <p><span class="info-title">身份证号:</span> <span class="info-detail">{{ item.person_id }}</span></p>
         <p><span class="info-title">卡号:</span>
-          <a @click="toggleShowCards(item)">显示卡号 ({{ item.person_card.length }})</a>
+          <a @click="toggleShowCards(item)">显示 [卡号-模型检测结果-标签] ({{ item.person_card.length }})</a>
           <ul v-if="item.showCards">
             <li v-for="cardInfo in item.cardLabels" :key="cardInfo.card" class="card-info">
               <span class="card-number">{{ cardInfo.card }}</span>
