@@ -45,8 +45,8 @@
   import dbUtils from "libs/util.strotage";
 
   const columns = [
-    {title: "嫌疑人姓名", dataIndex: "name", key: "name", align: 'center'},
-    {title: "嫌疑人卡号", dataIndex: "card", key: "card", align: 'center'},
+    {title: "涉案人员姓名", dataIndex: "name", key: "name", align: 'center'},
+    {title: "涉案人员卡号", dataIndex: "card", key: "card", align: 'center'},
     {title: "关键度（综合度）", dataIndex: "keypoint", key: "keypoint", align: 'center'},
   ];
   const headers = {

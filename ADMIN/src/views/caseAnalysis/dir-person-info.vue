@@ -4,7 +4,7 @@
     <div class="search-bar">
       <a-row type="flex" justify="start" align="middle" :gutter="10">
         <a-col :span="18">
-          <a-input v-model:value="searchValue" placeholder="请输入需要查询的用户信息" @pressEnter="search"></a-input>
+          <a-input v-model:value="searchValue" placeholder="请输入需要查询的人员信息" @pressEnter="search"></a-input>
         </a-col>
         <a-col :span="6">
           <a-button type="primary" size="middle" @click="search">查询</a-button>

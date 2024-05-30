@@ -60,7 +60,7 @@ const frameIn = [
         name: "dir-person-info",
         meta: {
           cache: true,
-          title: "用户案例分析",
+          title: "人员案例分析",
           requiresAuth: false,
           icon: "yonghuming"
         },
@@ -71,7 +71,7 @@ const frameIn = [
         name: "dir-group-info",
         meta: {
           cache: true,
-          title: "洗钱团伙分析",
+          title: "涉案团伙分析",
           requiresAuth: false,
           icon: "zuzhi"
         },

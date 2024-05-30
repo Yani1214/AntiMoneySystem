@@ -81,7 +81,7 @@ export default {
         this.chartLine = markRaw(echarts.init(document.getElementById('chartLine'),'shine'));// 基于准备好的dom，初始化echarts实例
         let option = {
             title: {
-                text: '交易时间点对应交易条数', // 设置折线图标题
+                text: '交易时间段对应交易条数', // 设置折线图标题
                 subtext: '以2021年为例', // 设置折线图副标题，可选
                 left: 'center' // 标题居中对齐，可选
             },

@@ -4,7 +4,7 @@
       <div class="search-bar">
         <a-row type="flex" justify="start" align="middle" :gutter="10">
           <a-col :span="18">
-            <a-input v-model:value="searchValue" placeholder="请输入需要查询的用户名称" @pressEnter="search"></a-input>
+            <a-input v-model:value="searchValue" placeholder="请输入需要查询的人员名称" @pressEnter="search"></a-input>
           </a-col>
           <a-col :span="6">
             <a-button type="primary" size="middle" @click="search">查询</a-button>
@@ -14,7 +14,7 @@
       
       <a-button type="primary" size="small" @click="key_point">
         <template #icon></template>
-        返回查看涉案人员信息
+        返回查看涉案团伙交易数据分布情况
       </a-button>
       <br>
       <br>
