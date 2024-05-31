@@ -6,7 +6,7 @@
     <hr/>
     <section class="one">
       <header class="major">
-        <h1>欢迎使用反洗钱追踪溯源系统！</h1>
+        <h1>欢迎使用NoEscape！</h1>
         <p class="sub-title">请点击 "上传文件" 以批量上传需要检测的文件(zip格式)</p>
         <p>上传成功后，点击 "开始检测" 以进行数据分析</p>
 

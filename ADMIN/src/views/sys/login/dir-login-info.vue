@@ -7,7 +7,7 @@
       <a-row align="middle" justify="center" class="login-content-main">
         <a-col class="login-content-bgc" :pull="1">
           <img :src="loginBg" width="480">
-          <h2>{{setting.websiteInfo.desc || '一个反洗钱系统'}}</h2>
+          <h2>{{setting.websiteInfo.desc || '一个洗钱追踪溯源系统'}}</h2>
           <p style="margin-top: 15px">✨✨✨ 欢迎使用 {{setting.websiteInfo.name || 'NoEscape'}}@{{ setting.websiteInfo.version || '1.0.0' }}！</p>
         </a-col>
         <a-col class="login-content-form">

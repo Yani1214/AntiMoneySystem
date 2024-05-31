@@ -3,7 +3,7 @@ export default {
     websiteInfo: {
         name: 'NoEscape',
         version: '1.0.0',
-        desc: '一个反洗钱系统',
+        desc: '一个洗钱追踪溯源系统',
         // logo仅支持在线地址
         // logo: 'http://zhouyi.run:5222/api/public/admin/getFiles?id=5d38c26acf509bdcab4f8c677ce90088.png&&mimetype=image/png',
     },
@@ -20,7 +20,7 @@ export default {
     // Chuifengdinglv: 页脚备案信息记得修改
     // 页脚备案信息
     reference: {
-        show: true, //是否展示页脚
+        show: false, //是否展示页脚
         number: '黔ICP备2022001745号-1',//备案号
         authorization: '芒果快熟', // 站点所属机构
         authorizationUrl: 'https://gitee.com/Z568_568', // 站点所属机构链接
