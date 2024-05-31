@@ -21,9 +21,9 @@ export default {
     // 页脚备案信息
     reference: {
         show: false, //是否展示页脚
-        number: '黔ICP备2022001745号-1',//备案号
-        authorization: '芒果快熟', // 站点所属机构
-        authorizationUrl: 'https://gitee.com/Z568_568', // 站点所属机构链接
+        number: 'xxx',//备案号
+        authorization: 'xxx', // 站点所属机构
+        authorizationUrl: 'https://xxx.com', // 站点所属机构链接
     },
     // 注册的主题  fixed:true, 默认主题（必填一个）
     theme: {
