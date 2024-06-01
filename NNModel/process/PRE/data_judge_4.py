@@ -90,6 +90,7 @@ def analyze_transactions(folder_path):
                         print(f'交易余额是该笔交易发生后的行数: {post_transaction_count}')
                         print(f'收付标志正常的行数: {normal_flag_count}')
                         print(f'收付标志特殊的行数: {special_flag_count}\n')
+                        file_remove(folder_path,file_path)
                     else:
                         if pre_transaction_count > post_transaction_count:
                             print(f'文件 {file_path}交易余额是该笔交易发生前')

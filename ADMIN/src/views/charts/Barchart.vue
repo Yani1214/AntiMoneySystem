@@ -91,7 +91,7 @@ export default {
       this.chartBar = markRaw(echarts.init(document.getElementById('chartBar'), 'macarons'));
       this.chartBar.setOption({
         title: {
-          text: '交易金额区间对应交易条数', // 修改标题为柱状图
+          text: '交易金额区间对应交易条数图', // 修改标题为柱状图
           subtext: '每人在各自交易区间内所占交易条数',
           x: 'center',
         },
