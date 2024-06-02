@@ -22,50 +22,40 @@
       </header>
     </section>
     <section class="intro">
-      <ZySectionHeader title="我们的项目" titleNum="01"/>
+      <ZySectionHeader title="我们的产品" titleNum="01"/>
       <a-row justify="center" align="top" :gutter="16">
         <a-col>
           <a-card :bordered="true">
-            <p>✨vue3-antd-plus在线文档：<a href="https://z568_568.gitee.io/vue3-antd-plus" target="_blank">https://z568_568.gitee.io/vue3-antd-plus</a>
-            </p>
-            <p>✨QQ交流群: 529675917</p>
-            <p>✨作者邮箱：yizhou568@gmail.com</p>
+            <h4>WHO ARE WE？</h4>
+            <br>
+            <p>✨「No Escape」：一个致力于协助执法机构识别洗钱行为、实现追踪溯源的智能化系统。</p>
+            <br>
+            <p>✨「No Escape」旨在协助执法机关打击以网络赌博、电信诈骗为代表的网络空间洗钱犯罪行为，维护经济社会清明稳定，保护广大人民财产安全。</p>
+            <br>
+            <p>✨「No Escape」让洗钱行为有迹可循，让洗钱分子无处可逃。</p>
+            <br>
           </a-card>
         </a-col>
-        <a-col>
+        <a-col :span="12">
           <a-card :bordered="true">
-            <p>✨vue3-antd-plus在线文档：<a href="https://z568_568.gitee.io/vue3-antd-plus" target="_blank">https://z568_568.gitee.io/vue3-antd-plus</a>
-            </p>
-            <p>✨QQ交流群: 529675917</p>
-            <p>✨作者邮箱：yizhou568@gmail.com</p>
+            <h4>WHY CHOOSE US？</h4>
+            <br>
+            <p>✨选择「No Escape」选择“有效”：「No Escape」具有系统用户管理、交易数据分析、人员案例分析、涉案团伙分析和交易数据分布五大功能板块，为您提供全过程智能化反洗钱服务。</p>
+            <br>
+            <p>✨选择「No Escape」选择”高效“：「No Escape」模型集成深度学习与传统规则匹配算法，省去人工逐条核查，为您提供高效便捷的反洗钱服务。</p>
+            <br>
+            <p>✨选择「No Escape」选择“长效”：「No Escape」结合专家审核结果，对内置模型及时优化，实时更新，自动化适应新型洗钱方式，为您提供长效持久的反洗钱服务。</p>
+            <br>
           </a-card>
         </a-col>
-        <a-col>
+        <a-col :span="12">
           <a-card :bordered="true">
-            <p>✨vue3-antd-plus在线文档：<a href="https://z568_568.gitee.io/vue3-antd-plus" target="_blank">https://z568_568.gitee.io/vue3-antd-plus</a>
-            </p>
-            <p>✨QQ交流群: 529675917</p>
-            <p>✨作者邮箱：yizhou568@gmail.com</p>
-          </a-card>
-        </a-col>
-        <a-col>
-          <a-card :bordered="true">
-            <p>✨vue3-antd-plus在线文档：<a href="https://z568_568.gitee.io/vue3-antd-plus" target="_blank">https://z568_568.gitee.io/vue3-antd-plus</a>
-            </p>
-            <p>✨QQ交流群: 529675917</p>
-            <p>✨作者邮箱：yizhou568@gmail.com</p>
-          </a-card>
-        </a-col>
-      </a-row>
-
-      <ZySectionHeader title="关于我们" titleNum="02"/>
-      <a-row justify="center" align="top" :gutter="16">
-        <a-col>
-          <a-card :bordered="true">
-            <p>✨vue3-antd-plus在线文档：<a href="https://z568_568.gitee.io/vue3-antd-plus" target="_blank">https://z568_568.gitee.io/vue3-antd-plus</a>
-            </p>
-            <p>✨QQ交流群: 529675917</p>
-            <p>✨作者邮箱：yizhou568@gmail.com</p>
+            <h4>WHAT CAN WE DO？</h4>
+            <br>
+            <p>✨「No Escape」集合深度学习模型与传统规则匹配模型，实现对复杂的金融交易网络进行高效分析，在提高洗钱行为检测效率的同时提供高度结果可解释性。</p>
+            <br>
+            <p>✨「No Escape」利用数据可视化、有向图分析等技术，支持对涉案资金流向进行追踪分析，实现对团伙洗钱行为的追踪溯源。</p>
+            <br>
           </a-card>
         </a-col>
       </a-row>
