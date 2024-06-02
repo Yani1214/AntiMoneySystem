@@ -40,14 +40,14 @@ def fill_name_munber(name_to_number):
     # 删除不要的“账号2”列
     df.drop(columns=['账号2'], inplace=True)
     # 修改列名和增加列名
-    new_columns = ['person_name', 'person_id','person_card','person_account', 'bank_name', 'task_id','summary', 'label','manual_review','id']  # 添加新列名
+    new_columns = ['person_name', 'person_id','person_card','person_account', 'bank_name', 'task_id','summary', 'label']  # 添加新列名
     df.columns = new_columns
     # 去除person_name为空的行
     df = df.dropna(subset=['person_name'])
     # 添加id列,填充person_number列
     df["person_number"] = df["person_name"].map(name_to_number)
     # 清理person_number字段中的回车符
-    df['person_number'] = df['person_number'].str.replace('\r', '').str.strip()
+    df['person_number'] = df['person_number'].astype(str).replace('\r', '').str.strip()
     df['manual_review'] = ''
     df['id'] = ''
     for index, row in df.iterrows():

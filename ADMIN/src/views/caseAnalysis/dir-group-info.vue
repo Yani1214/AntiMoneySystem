@@ -28,7 +28,7 @@ function getColorByImportance(importance) {
     const g = Math.floor(255 * importance * 4);
     const b = 0;
     return `rgb(${r},${g},${b})`;
-  } else if (importance <= 3) {
+  } else if (importance <= 1.8) {
     // 黄色到橙色渐变
     const r = Math.floor(255 * (importance - 0.25) * 4);
     const g = 255;
@@ -242,7 +242,7 @@ export default {
             const nodeIndex = element.name.toString()
             for (let i = 0; i < traceData.length; i++) {
               if (traceData[i][0].toString() === nodeIndex) {
-                element.symbolSize = traceData[i][1]*15;
+                element.symbolSize = traceData[i][1]*40;
                 // 更新节点颜色
                 element.itemStyle = {
                   color: getColorByImportance(traceData[i][1])

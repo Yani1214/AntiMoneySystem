@@ -28,6 +28,12 @@ def unzip_file(zip_file, extract_to):
             file_info.filename = file_info.filename.encode('cp437').decode('gbk')  # 将文件名进行解码
             zip_ref.extract(file_info, extract_to)
 
+def reunzip_file(zip_file, extract_to):
+    with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+        for file_info in zip_ref.infolist():
+            file_info.filename = file_info.filename.encode('GB18030').decode('gbk')  # 将文件名进行解码
+            zip_ref.extract(file_info, extract_to)
+
 # 处理分析文件上传的文件内容
 def execute_another_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -175,11 +181,9 @@ def byhand_file_import():
         # 将zip文件解压到指定目录
         if not os.path.exists(IMPORT_FOLDER):
             os.makedirs(IMPORT_FOLDER)
-        unzip_file(os.path.join(ZIP_FOLDER, filename), IMPORT_FOLDER)
-        # 对数据开始进行分析处理和上传数据库
-        execute_another_file(FILE_PATH)
+        reunzip_file(os.path.join(ZIP_FOLDER, filename), IMPORT_FOLDER)
 
-        return jsonify({'message': '请到人工数据处理界面进行处理', 'filename': filename}), 200
+        return jsonify({'message': '请核验已经上传的数据', 'filename': filename}), 200
 
 # 点击“核验完成”按钮，将manual文件夹的所有文件移动到cooked文件夹
 @byhand_blueprint.route('/byhand/detect', methods=['POST'])

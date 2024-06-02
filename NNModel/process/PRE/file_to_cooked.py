@@ -15,22 +15,11 @@ batch_reback()
 batch_trans()
 batch_person()
 
-# 将1-11人交易表格转换为标准的csv表格
-# batch_csv()
-
 # 对交易数据表格填充新的特征
 batch_feature()
 
 # 将每个人的相关交易数据各自存为一个表格
 trans_people()
-
-# # 将之前不符合格式要求的special的工行数据进行处理，并加入到之前处理完的一人一表中
-# feature_to_fill()
-# src_to_fill()
-# trans_to_fill()
-# id_to_fill()
-# person_to_fill()
-# trans_to_people()
 
 # 对一人一表数据去重
 batch_duplicate()

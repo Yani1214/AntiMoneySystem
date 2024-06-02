@@ -61,7 +61,7 @@ def get_amount(folder_paths,column_name):
     return all_values
 #################################################################计算中位数##############################################################
 def cal_median():
-    folder_path = ['database/cooked/','database/special_people']
+    folder_path = ['NNModel/process/database/cooked/']
     column_name = "交易金额"
     all_values = get_amount(folder_path,column_name)
     print(all_values)
@@ -77,7 +77,7 @@ def cal_median():
 
 #################################################################计算平均数##############################################################
 def cal_mean():
-    folder_path = ['database/cooked/','database/special_people']
+    folder_path = ['NNModel/process/database/cooked/']
     column_name = "交易金额"
     all_values = get_amount(folder_path,column_name)
     # 将列表转换为数值类型，无法转换的值将被设为 NaN
@@ -92,7 +92,7 @@ def cal_mean():
 
 #################################################################计算分位数##############################################################
 def cal_quantile_25():
-    folder_path = ['database/cooked/','database/special_people']
+    folder_path = ['NNModel/process/database/cooked/']
     column_name = "交易金额"
     all_values = get_amount(folder_path, column_name)
     # 将列表转换为数值类型，无法转换的值将被设为 NaN
@@ -110,7 +110,7 @@ def cal_quantile_25():
         return None
     
 def cal_quantile_75():
-    folder_path = ['database/cooked/','database/special_people']
+    folder_path = ['NNModel/process/database/cooked/']
     column_name = "交易金额"
     all_values = get_amount(folder_path, column_name)
     # 将列表转换为数值类型，无法转换的值将被设为 NaN

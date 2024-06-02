@@ -8,7 +8,7 @@ def people_list():
     parent_dir = os.path.dirname(file_path)
 
     # 给定目录路径
-    dir = 'database\\people\\'
+    dir = 'NNModel\\process\\database\\people\\'
     sub_file= []
     sub_dir=[]
     for name in os.listdir(dir):

@@ -103,8 +103,8 @@ def batch_clean():
     1.获取给定目录下的所有子目录名称，并存储到列表中
     """
     # 给定目录路径
-    dir = 'database/cooked/'
-    new_dir = 'database/blank/'
+    dir = 'NNModel/process/database/cooked/'
+    new_dir = 'NNModel/process/database/blank/'
     sub_dir= []
     # 遍历目录中的所有文件和子目录
     for item in os.listdir(dir):
